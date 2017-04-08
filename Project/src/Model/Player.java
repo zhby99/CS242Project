@@ -1,4 +1,6 @@
 package Model;
+import Model.utils.*;
+import java.util.ArrayList;
 
 /**
  * Created by wu on 4/8/17.
@@ -6,17 +8,21 @@ package Model;
 public class Player {
 	int id;
 	int score;
+	GemInfo tmpGems;
+	int tmpGolds;
 	GemInfo gems;
 	int golds;
-	ArrayList<Card> cards;
+	int numCards;
 	ArrayList<Card> reserves;
 
 	Player(int pid){
 		id = pid;
 		score = 0;
+		tmpGems = new GemInfo(0,0,0,0,0);
+		tmpGolds = 0;
 		gems = new GemInfo(0,0,0,0,0);
 		golds = 0;
-		cards = new ArrayList<Card>();
+		numCards = 0;
 		reserves = new ArrayList<Card>();
 	}
 }
