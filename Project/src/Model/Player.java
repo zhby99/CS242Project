@@ -2,18 +2,20 @@ package Model;
 import Model.utils.*;
 import java.util.ArrayList;
 
+import static Model.utils.GemInfo.combineGems;
+
 /**
  * Created by wu on 4/8/17.
  */
 public class Player {
-	private int id;
+	final private int id;
 	private int score;
 	GemInfo gems;
 	int golds;
 	GemInfo cards;
 	int numCards;
 	ArrayList<Card> reserves;
-	Board board;
+	private Board board;
 
 	public Player(int pid, Board newBoard){
 		id = pid;
@@ -34,12 +36,27 @@ public class Player {
 
 	}
 
+	/**
+	 * Reserved a specified card in this round by the player.
+	 * @param newCard the card chose to be reserved
+	 */
 	public void reserveCard(Card newCard){
-
+		if(this.reserves.size()>=3 || this.board.getAvailableGolds()<=0){
+			//TODO: Exception
+		}
+		else{
+			this.reserves.add(newCard);
+			this.golds++;
+			this.board.reduceAvailableGolds();
+		}
 	}
 
-	public void collectGems(){
-
+	/**
+	 * Update the gems of the current player according to the collection in this round.
+	 * @param collectedGems The gems collected by player in this round
+	 */
+	public void collectGems(GemInfo collectedGems){
+		combineGems(this.gems, collectedGems);
 	}
 
 	public void buyReserved(){
