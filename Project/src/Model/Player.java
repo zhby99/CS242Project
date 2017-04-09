@@ -15,7 +15,7 @@ public class Player {
 	int numCards;
 	ArrayList<Card> reserves;
 
-	Player(int pid){
+	public Player(int pid){
 		id = pid;
 		score = 0;
 		tmpGems = new GemInfo(0,0,0,0,0);
