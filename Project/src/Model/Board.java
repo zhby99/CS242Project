@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static Model.utils.GemInfo.combineGems;
+import static Model.utils.GameUtils.*;
 
 /**
  * Created by yu on 4/8/17.
@@ -22,17 +23,33 @@ public class Board {
     public Board(int numPlayer) {
         this.numPlayer = numPlayer;
         nobles = new Noble[numPlayer+1];
-        decks = new Deck[3]; // three decks for cards of different level
-        for (int i=0; i<3;i++) {
+        decks = new Deck[NUM_CARD_RANK]; // three decks for cards of different level
+        for (int i=0; i<NUM_CARD_RANK;i++) {
             decks[i] = new Deck();
         }
-        cards = new Card[3][4];
-        availableGem = new GemInfo(7,7,7,7,7);
-        availableGolds = 5;
+        cards = new Card[NUM_CARD_RANK][NUM_CARD_PER_RANK];
+        availableGem = new GemInfo(INIT_AMOUNT_PER_GEM);
+        availableGolds = INIT_AMOUNT_GOLD;
     }
 
     public int getAvailableGolds(){
         return this.availableGolds;
+    }
+
+    public int getNumPlayer(){
+        return this.numPlayer;
+    }
+
+    public Noble[] getNobles(){
+        return this.nobles;
+    }
+
+    public Deck[] getDecks(){
+        return this.decks;
+    }
+
+    public Card[][] getCards(){
+        return this.cards;
     }
 
     /**
@@ -46,9 +63,9 @@ public class Board {
      * Shuffle three decks
      */
     public void shuffle(){
-        Collections.shuffle(decks[0].cards);
-        Collections.shuffle(decks[1].cards);
-        Collections.shuffle(decks[2].cards);
+        for(Deck deck : this.decks){
+            Collections.shuffle(deck.cards);
+        }
     }
 
     /**
@@ -80,8 +97,17 @@ public class Board {
         initialMedianRankCards();
         initialHighRankCards();
         intitialNobles();
+        initialCardOnBoard();
     }
 
+    private void initialCardOnBoard(){
+        for(int i = 0; i<NUM_CARD_RANK; i++){
+            for (int j = 0; j < NUM_CARD_PER_RANK; j++){
+                this.cards[i][j] = this.decks[i].cards.get(0);
+                decks[i].cards.remove(0);
+            }
+        }
+    }
     /**
      * Used to initial all noble cards
      */
