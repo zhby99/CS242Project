@@ -14,7 +14,6 @@ import static Model.utils.GameUtils.*;
 public class Game {
     private Player[] players;
     private Player currentPlayer;
-    //private Player nextTurnPlayer;
     private Board gameBoard;
 
     Game(){
@@ -37,5 +36,16 @@ public class Game {
             }
         }
         return false;
+    }
+
+    /**
+     * Turn the next player
+     */
+    public void turnToNextPlayer(){
+        int currentId = currentPlayer.getId();
+        if(currentId == NUM_PLAYER){
+            currentId = 0;
+        }
+        currentPlayer = this.players[currentId];
     }
 }
