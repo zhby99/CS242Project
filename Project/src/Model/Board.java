@@ -35,6 +35,22 @@ public class Board {
         return this.availableGolds;
     }
 
+    public int getNumPlayer(){
+        return this.numPlayer;
+    }
+
+    public Noble[] getNobles(){
+        return this.nobles;
+    }
+
+    public Deck[] getDecks(){
+        return this.decks;
+    }
+
+    public Card[][] getCards(){
+        return this.cards;
+    }
+
     /**
      * Call when any player choose to reserve a card, decrease the gold by 1.
      */
@@ -80,8 +96,17 @@ public class Board {
         initialMedianRankCards();
         initialHighRankCards();
         intitialNobles();
+        initialCardOnBoard();
     }
 
+    private void initialCardOnBoard(){
+        for(int i = 0; i<NUM_CARD_RANK; i++){
+            for (int j = 0; j < NUM_CARD_PER_RANK; j++){
+                this.cards[i][j] = this.decks[i].cards.get(0);
+                decks[i].cards.remove(0);
+            }
+        }
+    }
     /**
      * Used to initial all noble cards
      */
