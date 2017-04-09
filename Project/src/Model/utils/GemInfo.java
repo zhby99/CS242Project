@@ -34,4 +34,12 @@ public class GemInfo {
         currentGems.ruby += addGems.ruby;
         currentGems.sapphire += addGems.sapphire;
     }
+
+    public static void reduceGems(GemInfo currentGems, GemInfo addGems){
+        currentGems.diamond -= addGems.diamond;
+        currentGems.emerald -= addGems.emerald;
+        currentGems.onyx -= addGems.onyx;
+        currentGems.ruby -= addGems.ruby;
+        currentGems.sapphire -= addGems.sapphire;
+    }
 }

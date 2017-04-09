@@ -3,6 +3,7 @@ import Model.utils.*;
 import java.util.ArrayList;
 
 import static Model.utils.GemInfo.combineGems;
+import static Model.utils.GemInfo.reduceGems;
 
 /**
  * Created by wu on 4/8/17.
@@ -57,6 +58,7 @@ public class Player {
 	 */
 	public void collectGems(GemInfo collectedGems){
 		combineGems(this.gems, collectedGems);
+		reduceGems(this.board.availableGem, collectedGems);
 	}
 
 	public void buyReserved(){
