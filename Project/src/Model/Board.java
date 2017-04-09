@@ -16,7 +16,6 @@ public class Board {
     private Card[][] cards;
     private GemInfo AvailableGem;
     private int AvailableGolds;
-    private Player[] players;
 
     public Board(int numPlayer) {
         this.numPlayer = numPlayer;
@@ -28,11 +27,6 @@ public class Board {
         cards = new Card[3][4];
         AvailableGem = new GemInfo(7,7,7,7,7);
         AvailableGolds = 5;
-        players = new Player[4];
-        for (int i=0; i<4;i++)
-        {
-            players[i] = new Player(i);
-        }
     }
 
     /**
