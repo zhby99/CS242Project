@@ -19,12 +19,24 @@ public class GemInfo {
         this.sapphire = numSapphire;
     }
 
+    public GemInfo(int numberPerGem){
+        this(numberPerGem,numberPerGem,numberPerGem,numberPerGem,numberPerGem);
+    }
+
     public void updateInfo(int deltaDiamond, int deltaEmerald,int deltaOnyx, int deltaRuby, int deltaSapphire){
         this.diamond += deltaDiamond;
         this.emerald += deltaEmerald;
         this.onyx += deltaOnyx;
         this.ruby += deltaRuby;
         this.sapphire += deltaSapphire;
+    }
+
+    public void setGems(int newDiamond, int newEmerald,int newOnyx, int newRuby, int newSapphire){
+        this.diamond += newDiamond;
+        this.emerald += newEmerald;
+        this.onyx += newOnyx;
+        this.ruby += newRuby;
+        this.sapphire += newSapphire;
     }
 
     public static void combineGems(GemInfo currentGems, GemInfo addGems){
