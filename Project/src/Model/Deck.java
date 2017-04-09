@@ -5,13 +5,15 @@ import java.util.ArrayList;
  * Created by yu on 4/8/17.
  */
 public class Deck {
-    ArrayList<Card> low;
+    ArrayList<Card> cards;
     ArrayList<Card> med;
     ArrayList<Card> high;
 
+    ArrayList<Card> asd;
+
 
     public Deck() {
-        low = new ArrayList<Card>();
+        cards = new ArrayList<Card>();
         med = new ArrayList<Card>();
         high = new ArrayList<Card>();
     }
