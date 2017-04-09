@@ -13,8 +13,9 @@ public class Player {
 	GemInfo cards;
 	int numCards;
 	ArrayList<Card> reserves;
+	Board board;
 
-	public Player(int pid){
+	public Player(int pid, Board newBoard){
 		id = pid;
 		score = 0;
 		gems = new GemInfo(0,0,0,0,0);
@@ -22,6 +23,7 @@ public class Player {
 		cards = new GemInfo(0,0,0,0,0);
 		numCards = 0;
 		reserves = new ArrayList<Card>();
+		board = newBoard;
 	}
 
 	public int getId(){return id;}
