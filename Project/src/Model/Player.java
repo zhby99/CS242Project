@@ -2,6 +2,8 @@ package Model;
 import Model.utils.*;
 import java.util.ArrayList;
 
+import static Model.utils.GameUtils.MAX_RESERVED_CARDS;
+import static Model.utils.GameUtils.WINNING_SCORE;
 import static Model.utils.GemInfo.combineGems;
 import static Model.utils.GemInfo.reduceGems;
 import static java.lang.Math.*;
@@ -22,9 +24,9 @@ public class Player {
 	public Player(int pid, Board newBoard){
 		id = pid;
 		score = 0;
-		gems = new GemInfo(0,0,0,0,0);
+		gems = new GemInfo(0);
 		golds = 0;
-		cards = new GemInfo(0,0,0,0,0);
+		cards = new GemInfo(0);
 		numCards = 0;
 		reserves = new ArrayList<Card>();
 		board = newBoard;
@@ -64,7 +66,7 @@ public class Player {
 	 * @param newCard the card chose to be reserved
 	 */
 	public void reserveCard(Card newCard){
-		if(this.reserves.size()>=3 || this.board.getAvailableGolds()<=0){
+		if(this.reserves.size()>= MAX_RESERVED_CARDS || this.board.getAvailableGolds()<=0){
 			//TODO: Exception
 		}
 		else{
@@ -81,6 +83,14 @@ public class Player {
 	public void collectGems(GemInfo collectedGems){
 		combineGems(this.gems, collectedGems);
 		reduceGems(this.board.availableGem, collectedGems);
+	}
+
+	/**
+	 * Check if the player has won
+	 * @return true if the player won
+	 */
+	public final boolean hasWon(){
+		return this.score >= WINNING_SCORE;
 	}
 
 }
