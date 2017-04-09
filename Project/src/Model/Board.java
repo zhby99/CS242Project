@@ -5,6 +5,8 @@ import Model.utils.GemInfo;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static Model.utils.GemInfo.combineGems;
+
 /**
  * Created by yu on 4/8/17.
  */
@@ -224,14 +226,13 @@ public class Board {
 
     /**
      * Update the number of the available gems
-     * @param deltaDiamond the change value of Diamond
-     * @param deltaEmerald the change value of Emerald
-     * @param deltaOnyx the change value of Onyx
-     * @param deltaRuby the change value of Ruby
-     * @param deltaSapphire the change value of Sapphire
      */
-    public void changeGem(int deltaDiamond, int deltaEmerald,int deltaOnyx, int deltaRuby, int deltaSapphire){
-        availableGem.updateInfo(deltaDiamond, deltaEmerald, deltaOnyx, deltaRuby, deltaSapphire);
+    public void changeGem(GemInfo deltaGem){
+        combineGems(availableGem, deltaGem);
+    }
+
+    public void changeGold(int deltaGold){
+        this.availableGolds += deltaGold;
     }
 
 
