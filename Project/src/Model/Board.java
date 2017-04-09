@@ -2,8 +2,8 @@ package Model;
 
 import Model.utils.GemInfo;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * Created by yu on 4/8/17.
@@ -14,8 +14,8 @@ public class Board {
     private Noble[] nobles;
     private Deck[] decks;
     private Card[][] cards;
-    private GemInfo AvailableGem;
-    private int AvailableGolds;
+    GemInfo availableGem;
+    private int availableGolds;
 
     public Board(int numPlayer) {
         this.numPlayer = numPlayer;
@@ -25,8 +25,19 @@ public class Board {
             decks[i] = new Deck();
         }
         cards = new Card[3][4];
-        AvailableGem = new GemInfo(7,7,7,7,7);
-        AvailableGolds = 5;
+        availableGem = new GemInfo(7,7,7,7,7);
+        availableGolds = 5;
+    }
+
+    public int getAvailableGolds(){
+        return this.availableGolds;
+    }
+
+    /**
+     * Call when any player choose to reserve a card, decrease the gold by 1.
+     */
+    public void reduceAvailableGolds(){
+        this.availableGolds--;
     }
 
     /**
@@ -66,8 +77,33 @@ public class Board {
         initialLowRankCards();
         initialMedianRankCards();
         initialHighRankCards();
+        intitialNobles();
     }
 
+    /**
+     * Used to initial all noble cards
+     */
+    private void intitialNobles(){
+        ArrayList<Noble> nobleCards = new ArrayList<Noble>();
+        nobleCards.add(new Noble(0,4,0,4,0));
+        nobleCards.add(new Noble(3,0,3,3,0));
+        nobleCards.add(new Noble(0,4,0,0,4));
+        nobleCards.add(new Noble(3,3,0,0,3));
+        nobleCards.add(new Noble(4,0,4,0,0));
+        nobleCards.add(new Noble(0,3,3,3,0));
+        nobleCards.add(new Noble(0,0,4,4,0));
+        nobleCards.add(new Noble(3,0,3,0,3));
+        nobleCards.add(new Noble(4,0,0,0,4));
+        nobleCards.add(new Noble(0,3,0,3,3));
+        Collections.shuffle(nobleCards);
+        for(int i = 0; i< numPlayer+1; i++){
+            this.nobles[i] = nobleCards.get(i);
+        }
+    }
+
+    /**
+     * Used to initial high rank cards
+     */
     private void initialHighRankCards() {
         this.decks[2].cards.add(new Card(3, new GemInfo(3,3,3,0,5), Gem.RUBY));
         this.decks[2].cards.add(new Card(4, new GemInfo(0,6,0,3,3), Gem.RUBY));
@@ -95,6 +131,9 @@ public class Board {
         this.decks[2].cards.add(new Card(5, new GemInfo(3,0,7,0,0), Gem.DIAMOND));
     }
 
+    /**
+     * used to initial median rank cards
+     */
     private void initialMedianRankCards() {
         this.decks[1].cards.add(new Card(1, new GemInfo(0,3,3,0,2), Gem.SAPPHIRE));
         this.decks[1].cards.add(new Card(1, new GemInfo(0,2,0,3,2), Gem.SAPPHIRE));
@@ -132,6 +171,9 @@ public class Board {
         this.decks[1].cards.add(new Card(3, new GemInfo(6,0,0,0,0), Gem.DIAMOND));
     }
 
+    /**
+     * used to initial low rank cards
+     */
     private void initialLowRankCards() {
         //diamond
         this.decks[0].cards.add(new Card(0, new GemInfo(0,0,2,0,2), Gem.DIAMOND));
@@ -189,8 +231,9 @@ public class Board {
      * @param deltaSapphire the change value of Sapphire
      */
     public void changeGem(int deltaDiamond, int deltaEmerald,int deltaOnyx, int deltaRuby, int deltaSapphire){
-        AvailableGem.updateInfo(deltaDiamond, deltaEmerald, deltaOnyx, deltaRuby, deltaSapphire);
+        availableGem.updateInfo(deltaDiamond, deltaEmerald, deltaOnyx, deltaRuby, deltaSapphire);
     }
 
 
 }
+
