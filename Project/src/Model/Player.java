@@ -24,9 +24,9 @@ public class Player {
 	public Player(int pid, Board newBoard){
 		id = pid;
 		score = 0;
-		gems = new GemInfo(0,0,0,0,0);
+		gems = new GemInfo(0);
 		golds = 0;
-		cards = new GemInfo(0,0,0,0,0);
+		cards = new GemInfo(0);
 		numCards = 0;
 		reserves = new ArrayList<Card>();
 		board = newBoard;

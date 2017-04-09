@@ -27,7 +27,7 @@ public class Board {
             decks[i] = new Deck();
         }
         cards = new Card[NUM_CARD_RANK][NUM_CARD_PER_RANK];
-        availableGem = new GemInfo(INIT_AMOUNT_PER_GEM,INIT_AMOUNT_PER_GEM,INIT_AMOUNT_PER_GEM,INIT_AMOUNT_PER_GEM,INIT_AMOUNT_PER_GEM);
+        availableGem = new GemInfo(INIT_AMOUNT_PER_GEM);
         availableGolds = INIT_AMOUNT_GOLD;
     }
 
