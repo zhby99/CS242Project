@@ -13,7 +13,7 @@ public class Board {
     private Noble[] nobles;
     private Deck[] decks;
     private Card[][] cards;
-    private GemInfo availableGem;
+    GemInfo availableGem;
     private int availableGolds;
 
     public Board(int numPlayer) {
