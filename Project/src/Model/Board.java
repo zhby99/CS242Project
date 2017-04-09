@@ -3,7 +3,6 @@ package Model;
 import Model.utils.GemInfo;
 
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * Created by yu on 4/8/17.
@@ -14,8 +13,8 @@ public class Board {
     private Noble[] nobles;
     private Deck[] decks;
     private Card[][] cards;
-    private GemInfo AvailableGem;
-    private int AvailableGolds;
+    GemInfo availableGem;
+    private int availableGolds;
 
     public Board(int numPlayer) {
         this.numPlayer = numPlayer;
@@ -25,8 +24,16 @@ public class Board {
             decks[i] = new Deck();
         }
         cards = new Card[3][4];
-        AvailableGem = new GemInfo(7,7,7,7,7);
-        AvailableGolds = 5;
+        availableGem = new GemInfo(7,7,7,7,7);
+        availableGolds = 5;
+    }
+
+    public int getAvailableGolds(){
+        return this.availableGolds;
+    }
+
+    public void reduceAvailableGolds(){
+        this.availableGolds--;
     }
 
     /**
@@ -189,7 +196,7 @@ public class Board {
      * @param deltaSapphire the change value of Sapphire
      */
     public void changeGem(int deltaDiamond, int deltaEmerald,int deltaOnyx, int deltaRuby, int deltaSapphire){
-        AvailableGem.updateInfo(deltaDiamond, deltaEmerald, deltaOnyx, deltaRuby, deltaSapphire);
+        availableGem.updateInfo(deltaDiamond, deltaEmerald, deltaOnyx, deltaRuby, deltaSapphire);
     }
 
 
