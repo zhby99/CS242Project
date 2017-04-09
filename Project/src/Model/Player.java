@@ -83,6 +83,14 @@ public class Player {
 		reduceGems(this.board.availableGem, collectedGems);
 	}
 
+	/**
+	 * Check if the player has won
+	 * @return true if the player won
+	 */
+	public final boolean hasWon(){
+		return this.score >= 15;
+	}
+
 }
 
 
