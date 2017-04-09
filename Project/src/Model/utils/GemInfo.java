@@ -19,6 +19,10 @@ public class GemInfo {
         this.sapphire = numSapphire;
     }
 
+    public GemInfo(int numberPerGem){
+        this(numberPerGem,numberPerGem,numberPerGem,numberPerGem,numberPerGem);
+    }
+
     public void updateInfo(int deltaDiamond, int deltaEmerald,int deltaOnyx, int deltaRuby, int deltaSapphire){
         this.diamond += deltaDiamond;
         this.emerald += deltaEmerald;
