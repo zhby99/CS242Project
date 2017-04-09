@@ -5,6 +5,8 @@ import Model.utils.GemInfo;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static Model.utils.GameUtils.*;
+
 /**
  * Created by yu on 4/8/17.
  */
@@ -20,13 +22,13 @@ public class Board {
     public Board(int numPlayer) {
         this.numPlayer = numPlayer;
         nobles = new Noble[numPlayer+1];
-        decks = new Deck[3]; // three decks for cards of different level
-        for (int i=0; i<3;i++) {
+        decks = new Deck[NUM_CARD_RANK]; // three decks for cards of different level
+        for (int i=0; i<NUM_CARD_RANK;i++) {
             decks[i] = new Deck();
         }
-        cards = new Card[3][4];
-        availableGem = new GemInfo(7,7,7,7,7);
-        availableGolds = 5;
+        cards = new Card[NUM_CARD_RANK][NUM_CARD_PER_RANK];
+        availableGem = new GemInfo(INIT_AMOUNT_PER_GEM,INIT_AMOUNT_PER_GEM,INIT_AMOUNT_PER_GEM,INIT_AMOUNT_PER_GEM,INIT_AMOUNT_PER_GEM);
+        availableGolds = INIT_AMOUNT_GOLD;
     }
 
     public int getAvailableGolds(){
@@ -44,9 +46,9 @@ public class Board {
      * Shuffle three decks
      */
     public void shuffle(){
-        Collections.shuffle(decks[0].cards);
-        Collections.shuffle(decks[1].cards);
-        Collections.shuffle(decks[2].cards);
+        for(Deck deck : this.decks){
+            Collections.shuffle(deck.cards);
+        }
     }
 
     /**
