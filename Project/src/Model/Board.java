@@ -5,6 +5,7 @@ import Model.utils.GemInfo;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static Model.utils.GemInfo.combineGems;
 import static Model.utils.GameUtils.*;
 
 /**
@@ -33,6 +34,22 @@ public class Board {
 
     public int getAvailableGolds(){
         return this.availableGolds;
+    }
+
+    public int getNumPlayer(){
+        return this.numPlayer;
+    }
+
+    public Noble[] getNobles(){
+        return this.nobles;
+    }
+
+    public Deck[] getDecks(){
+        return this.decks;
+    }
+
+    public Card[][] getCards(){
+        return this.cards;
     }
 
     /**
@@ -80,8 +97,17 @@ public class Board {
         initialMedianRankCards();
         initialHighRankCards();
         intitialNobles();
+        initialCardOnBoard();
     }
 
+    private void initialCardOnBoard(){
+        for(int i = 0; i<NUM_CARD_RANK; i++){
+            for (int j = 0; j < NUM_CARD_PER_RANK; j++){
+                this.cards[i][j] = this.decks[i].cards.get(0);
+                decks[i].cards.remove(0);
+            }
+        }
+    }
     /**
      * Used to initial all noble cards
      */
@@ -226,14 +252,13 @@ public class Board {
 
     /**
      * Update the number of the available gems
-     * @param deltaDiamond the change value of Diamond
-     * @param deltaEmerald the change value of Emerald
-     * @param deltaOnyx the change value of Onyx
-     * @param deltaRuby the change value of Ruby
-     * @param deltaSapphire the change value of Sapphire
      */
-    public void changeGem(int deltaDiamond, int deltaEmerald,int deltaOnyx, int deltaRuby, int deltaSapphire){
-        availableGem.updateInfo(deltaDiamond, deltaEmerald, deltaOnyx, deltaRuby, deltaSapphire);
+    public void changeGem(GemInfo deltaGem){
+        combineGems(availableGem, deltaGem);
+    }
+
+    public void changeGold(int deltaGold){
+        this.availableGolds += deltaGold;
     }
 
 
