@@ -96,6 +96,7 @@ public class Board {
         initialLowRankCards();
         initialMedianRankCards();
         initialHighRankCards();
+        shuffle();
         intitialNobles();
         initialCardOnBoard();
     }
