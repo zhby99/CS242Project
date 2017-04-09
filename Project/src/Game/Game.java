@@ -3,6 +3,8 @@ package Game;
 import Model.Board;
 import Model.Player;
 
+import static Model.utils.GameUtils.*;
+
 /**
  * Created by boyinzhang on 4/9/17.
  */
@@ -10,7 +12,6 @@ import Model.Player;
 
 
 public class Game {
-    public final int NUM_PLAYER = 4;
     private Player[] players;
     private Player currentPlayer;
     //private Player nextTurnPlayer;
