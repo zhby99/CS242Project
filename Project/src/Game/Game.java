@@ -12,17 +12,30 @@ import static Model.utils.GameUtils.*;
 
 
 public class Game {
-    private Player[] players;
-    private Player currentPlayer;
-    private Board gameBoard;
+    public Player[] players;
+    public Player currentPlayer;
+    public Board gameBoard;
 
-    Game(){
+    public Game(){
         this.gameBoard = new Board(NUM_PLAYER);
+        this.gameBoard.initialBoard();
         this.players = new Player[NUM_PLAYER];
         for(int i = 0; i < NUM_PLAYER; i++){
             players[i] = new Player(i+1 , this.gameBoard);
         }
         currentPlayer = players[0];
+    }
+
+    public Board getGameBoard(){
+        return this.gameBoard;
+    }
+
+    public Player getCurrentPlayer(){
+        return this.currentPlayer;
+    }
+
+    public Player[] getPlayers(){
+        return players;
     }
 
     /**
