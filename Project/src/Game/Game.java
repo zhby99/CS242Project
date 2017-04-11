@@ -12,9 +12,9 @@ import static Model.utils.GameUtils.*;
 
 
 public class Game {
-    private Player[] players;
-    private Player currentPlayer;
-    private Board gameBoard;
+    public Player[] players;
+    public Player currentPlayer;
+    public Board gameBoard;
 
     public Game(){
         this.gameBoard = new Board(NUM_PLAYER);

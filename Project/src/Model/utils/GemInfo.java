@@ -20,6 +20,18 @@ public class GemInfo {
         this.sapphire = numSapphire;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        if (o == this) return true;
+        if (!(o instanceof GemInfo))return false;
+        GemInfo other = (GemInfo)o;
+
+        return (this.diamond == other.diamond && this.emerald == other.emerald
+                && this.onyx == other.onyx && this.ruby == other.ruby
+                && this.sapphire == other.sapphire);
+    }
+
     public GemInfo(int numberPerGem){
         this(numberPerGem,numberPerGem,numberPerGem,numberPerGem,numberPerGem);
     }
