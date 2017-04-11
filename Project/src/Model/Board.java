@@ -32,6 +32,8 @@ public class Board {
         availableGolds = INIT_AMOUNT_GOLD;
     }
 
+    public GemInfo getAvailableGem() { return availableGem;    }
+
     public int getAvailableGolds(){
         return this.availableGolds;
     }
