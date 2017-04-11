@@ -2,10 +2,8 @@ package Model;
 import Model.utils.*;
 import java.util.ArrayList;
 
-import static Model.utils.GameUtils.MAX_RESERVED_CARDS;
-import static Model.utils.GameUtils.WINNING_SCORE;
-import static Model.utils.GemInfo.combineGems;
-import static Model.utils.GemInfo.reduceGems;
+import static Model.utils.GameUtils.*;
+import static Model.utils.GemInfo.*;
 import static java.lang.Math.*;
 
 /**
@@ -107,24 +105,71 @@ public class Player {
 	 * Reserved a specified card in this round by the player.
 	 * @param newCard the card chose to be reserved
 	 */
-	public void reserveCard(Card newCard){
-		if(this.reserves.size()>= MAX_RESERVED_CARDS || this.board.getAvailableGolds()<=0){
+	public boolean reserveCard(Card newCard){
+		//exceed the limit for reservation !
+		if(this.reserves.size()>= MAX_RESERVED_CARDS){
 			//TODO: Exception
+			return false;
+		}
+		//no more gold available
+		else if(this.board.getAvailableGolds()<=0) {
+			return false;
+		}
+		//exceed the limit of gems you can hold
+		else if(gems.GemTotalNum()+golds >= MAX_HOLD_GEMS){
+			return false;
 		}
 		else{
 			this.reserves.add(newCard);
 			this.golds++;
 			this.board.reduceAvailableGolds();
+			return true;
 		}
 	}
+
 
 	/**
 	 * Update the gems of the current player according to the collection in this round.
 	 * @param collectedGems The gems collected by player in this round
 	 */
-	public void collectGems(GemInfo collectedGems){
+	public boolean collectGems(GemInfo collectedGems){
+		//you can select at most three gems at a time
+		if(collectedGems.GemTotalNum() > MAX_COLLECT_GEMS)
+			return false;
+
+		//you can select 3 distinct gems
+		if(collectedGems.GemTotalNum() == MAX_COLLECT_GEMS){
+			if(collectedGems.GemMaxTypeNum() >= MAX_SAME_TYPE_GEMS)
+				return false;
+		}
+
+		//or two same gems if there are more than 4 gems of that type on the board
+		if(collectedGems.GemTotalNum() == MAX_SAME_TYPE_GEMS){
+			if(collectedGems.diamond == MAX_SAME_TYPE_GEMS) {
+				if (this.board.availableGem.diamond < MIN_SAME_TYPE_GEMS_ON_BOARD)
+					return false;
+			}
+			else if(collectedGems.emerald == MAX_SAME_TYPE_GEMS) {
+				if (this.board.availableGem.emerald < MIN_SAME_TYPE_GEMS_ON_BOARD)
+					return false;
+			}
+			else if(collectedGems.onyx == MAX_SAME_TYPE_GEMS) {
+				if (this.board.availableGem.onyx < MIN_SAME_TYPE_GEMS_ON_BOARD)
+					return false;
+			}
+			else if(collectedGems.ruby == MAX_SAME_TYPE_GEMS) {
+				if (this.board.availableGem.ruby < MIN_SAME_TYPE_GEMS_ON_BOARD)
+					return false;
+			}
+			else{
+				if (this.board.availableGem.sapphire < MIN_SAME_TYPE_GEMS_ON_BOARD)
+					return false;
+			}
+		}
+
 		combineGems(this.gems, collectedGems);
 		reduceGems(this.board.availableGem, collectedGems);
+		return true;
 	}
 
 	/**

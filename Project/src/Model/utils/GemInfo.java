@@ -1,5 +1,6 @@
 package Model.utils;
 
+import static java.lang.Math.*;
 /**
  * Created by boyinzhang on 4/8/17.
  */
@@ -21,6 +22,18 @@ public class GemInfo {
 
     public GemInfo(int numberPerGem){
         this(numberPerGem,numberPerGem,numberPerGem,numberPerGem,numberPerGem);
+    }
+
+    public int GemTotalNum(){
+        return diamond+emerald+onyx+ruby+sapphire;
+    }
+
+    public int GemMaxTypeNum(){
+        int maxNum = max(diamond,emerald);
+        maxNum = max(maxNum,onyx);
+        maxNum = max(maxNum,ruby);
+        maxNum = max(maxNum,sapphire);
+        return maxNum;
     }
 
     public void updateInfo(int deltaDiamond, int deltaEmerald,int deltaOnyx, int deltaRuby, int deltaSapphire){
