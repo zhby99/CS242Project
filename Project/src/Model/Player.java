@@ -59,6 +59,7 @@ public class Player {
                 cards.sapphire+=1;
                 break;
         }
+        this.score += newCard.getCardScore();
     }
 
 

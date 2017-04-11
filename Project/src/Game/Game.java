@@ -12,11 +12,11 @@ import static Model.utils.GameUtils.*;
 
 
 public class Game {
-    private Player[] players;
-    private Player currentPlayer;
-    private Board gameBoard;
+    public Player[] players;
+    public Player currentPlayer;
+    public Board gameBoard;
 
-    Game(){
+    public Game(){
         this.gameBoard = new Board(NUM_PLAYER);
         this.players = new Player[NUM_PLAYER];
         for(int i = 0; i < NUM_PLAYER; i++){
