@@ -32,6 +32,23 @@ public class Player {
 
 	public int getId(){return id;}
 	public int getScore() {return score;}
+	public GemInfo getGems() {
+		return gems;
+	}
+	public int getGolds() {
+		return golds;
+	}
+	public GemInfo getCards() {
+		return cards;
+	}
+	public int getNumCards() {
+		return numCards;
+	}
+	public ArrayList<Card> getReserves() {
+		return reserves;
+	}
+
+
 	public void updateScore(int newScore){ score = newScore;}
 
 

@@ -20,6 +20,18 @@ public class GemInfo {
         this.sapphire = numSapphire;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        if (o == this) return true;
+        if (!(o instanceof GemInfo))return false;
+        GemInfo other = (GemInfo)o;
+
+        return (this.diamond == other.diamond && this.emerald == other.emerald
+                && this.onyx == other.onyx && this.ruby == other.ruby
+                && this.sapphire == other.sapphire);
+    }
+
     public GemInfo(int numberPerGem){
         this(numberPerGem,numberPerGem,numberPerGem,numberPerGem,numberPerGem);
     }
@@ -45,11 +57,11 @@ public class GemInfo {
     }
 
     public void setGems(int newDiamond, int newEmerald,int newOnyx, int newRuby, int newSapphire){
-        this.diamond += newDiamond;
-        this.emerald += newEmerald;
-        this.onyx += newOnyx;
-        this.ruby += newRuby;
-        this.sapphire += newSapphire;
+        this.diamond = newDiamond;
+        this.emerald = newEmerald;
+        this.onyx = newOnyx;
+        this.ruby = newRuby;
+        this.sapphire = newSapphire;
     }
 
     public static void combineGems(GemInfo currentGems, GemInfo addGems){
