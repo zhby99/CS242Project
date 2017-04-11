@@ -50,9 +50,7 @@ public class Player {
 
 
 	public void updateScore(int newScore){ score = newScore;}
-	public GemInfo getGems(){
-	    return this.gems;
-    }
+
 
 
     /**
