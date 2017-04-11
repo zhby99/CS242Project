@@ -45,11 +45,11 @@ public class GemInfo {
     }
 
     public void setGems(int newDiamond, int newEmerald,int newOnyx, int newRuby, int newSapphire){
-        this.diamond += newDiamond;
-        this.emerald += newEmerald;
-        this.onyx += newOnyx;
-        this.ruby += newRuby;
-        this.sapphire += newSapphire;
+        this.diamond = newDiamond;
+        this.emerald = newEmerald;
+        this.onyx = newOnyx;
+        this.ruby = newRuby;
+        this.sapphire = newSapphire;
     }
 
     public static void combineGems(GemInfo currentGems, GemInfo addGems){

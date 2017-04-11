@@ -12,7 +12,7 @@ import static java.lang.Math.*;
 public class Player {
 	final private int id;
 	private int score;
-	GemInfo gems;
+	private GemInfo gems;
 	int golds;
 	GemInfo cards;
 	int numCards;
@@ -33,6 +33,9 @@ public class Player {
 	public int getId(){return id;}
 	public int getScore() {return score;}
 	public void updateScore(int newScore){ score = newScore;}
+	public GemInfo getGems(){
+	    return this.gems;
+    }
 
 
     /**

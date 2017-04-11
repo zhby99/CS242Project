@@ -18,11 +18,24 @@ public class Game {
 
     public Game(){
         this.gameBoard = new Board(NUM_PLAYER);
+        this.gameBoard.initialBoard();
         this.players = new Player[NUM_PLAYER];
         for(int i = 0; i < NUM_PLAYER; i++){
             players[i] = new Player(i+1 , this.gameBoard);
         }
         currentPlayer = players[0];
+    }
+
+    public Board getGameBoard(){
+        return this.gameBoard;
+    }
+
+    public Player getCurrentPlayer(){
+        return this.currentPlayer;
+    }
+
+    public Player[] getPlayers(){
+        return players;
     }
 
     /**
