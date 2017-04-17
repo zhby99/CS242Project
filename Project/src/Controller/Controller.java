@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import static View.BoardUI.*;
+
 /**
  * Created by boyinzhang on 4/17/17.
  */
@@ -115,6 +117,18 @@ public class Controller {
                 });
             }
         }
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < 3; j++){
+                int finalI = i;
+                int finalJ = j;
+                this.boardUI.getPlayers()[i].getReservedCards()[j].addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        selectedCard = game.getPlayers()[finalI].getReserves().get(finalJ);
+                    }
+                });
+            }
+        }
     }
 
     private void addFunctionalListeners(){
@@ -162,7 +176,7 @@ public class Controller {
                             "Warning", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
-                boolean status = game.getCurrentPlayer().buyCard(selectedCard,false);
+                boolean status = game.getCurrentPlayer().buyCard(selectedCard,selectedCard.isReserved());
                 if(!status){
                     JOptionPane.showMessageDialog(null, "Cannot buy that card! Please make another try!",
                             "Warning", JOptionPane.WARNING_MESSAGE);

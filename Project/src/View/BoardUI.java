@@ -147,24 +147,28 @@ public class BoardUI {
     }
 
     //load images in dir to memory
-    public void loadImagesInMemory(){
+    public void loadImagesInMemory() {
         final File dir = new File("src/View/img");
         if (dir.isDirectory()) { // make sure it's a directory
             for (final File f : dir.listFiles()) {
                 //load images of gems
-                if(f.getName().endsWith("Gem.png")){
-                    storeInMap(gemImages,7,f,GEM_WIDTH,GEM_HEIGHT);
+                if (f.getName().endsWith("Gem.png")) {
+                    storeInMap(gemImages, 7, f, GEM_WIDTH, GEM_HEIGHT);
                 }
                 //load images of nobles
-                else if(f.getName().endsWith("Noble.jpg")){
-                    storeInMap(nobleImages,9,f,NOBLE_WIDTH,NOBLE_HEIGHT);
+                else if (f.getName().endsWith("Noble.jpg")) {
+                    storeInMap(nobleImages, 9, f, NOBLE_WIDTH, NOBLE_HEIGHT);
                 }
                 //load images of cards
-                else{
-                    storeInMap(cardImages,4,f,CARD_WIDTH,CARD_HEIGHT);
+                else {
+                    storeInMap(cardImages, 4, f, CARD_WIDTH, CARD_HEIGHT);
                 }
             }
         }
+    }
+
+    public PlayerPanel[] getPlayers(){
+        return this.players;
     }
 
     private void setLayout() {
@@ -360,6 +364,10 @@ public class BoardUI {
                 bonusLabel.setPreferredSize(new Dimension(ratio*3/5,ratio*3/NUM_PLAYER));
                 cards.add(bonusLabel);
             }
+        }
+
+        public JButton[] getReservedCards(){
+            return this.reservedCards;
         }
 
     }
