@@ -110,6 +110,22 @@ public class BoardUI {
         return this.cards;
     }
 
+    public JButton getReset(){
+        return this.reset;
+    }
+
+    public JButton getCollect(){
+        return this.collect;
+    }
+
+    public JButton getBuy(){
+        return this.buy;
+    }
+
+    public JButton getReserve(){
+        return this.reserve;
+    }
+
     private void setLayout() {
 
         gameArea = new JPanel();
