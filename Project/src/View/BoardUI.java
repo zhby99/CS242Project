@@ -126,6 +126,10 @@ public class BoardUI {
         return this.reserve;
     }
 
+    public PlayerPanel[] getPlayers(){
+        return this.players;
+    }
+
     private void setLayout() {
 
         gameArea = new JPanel();
@@ -201,7 +205,7 @@ public class BoardUI {
     private void setPlayerArea() {
 
         playerArea.setLayout(new BoxLayout(playerArea,BoxLayout.Y_AXIS));
-        PlayerPanel players[] = new PlayerPanel[NUM_PLAYER];
+        players = new PlayerPanel[NUM_PLAYER];
         for (int i=0;i<NUM_PLAYER;i++){
             players[i] = new PlayerPanel();
             players[i].setPreferredSize(new Dimension(7*ratio,9*ratio/NUM_PLAYER));
@@ -314,6 +318,10 @@ public class BoardUI {
                 bonusLabel.setPreferredSize(new Dimension(ratio*3/5,ratio*3/NUM_PLAYER));
                 cards.add(bonusLabel);
             }
+        }
+
+        public JButton[] getReservedCards(){
+            return this.reservedCards;
         }
 
     }
