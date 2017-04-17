@@ -49,6 +49,10 @@ public class GemInfo implements Iterable<Integer>{
         this.sapphire += deltaSapphire;
     }
 
+    public void reset(){
+        this.setGems(0,0,0,0,0);
+    }
+
     public void setGems(int newDiamond, int newEmerald,int newOnyx, int newRuby, int newSapphire){
         this.diamond = newDiamond;
         this.emerald = newEmerald;

@@ -4,13 +4,13 @@ import Model.Player;
 import Model.utils.GemInfo;
 
 import java.awt.*;
-import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import static Model.utils.GameUtils.*;
+import Game.Game;
 
 /**
  * Created by Yu on 4/16/17.
@@ -18,7 +18,7 @@ import static Model.utils.GameUtils.*;
 public class BoardUI {
 
     private JFrame window;
-    private JPanel game;
+    private JPanel gameArea;
     private JPanel playerArea;
 
     private JPanel decks[];
@@ -27,6 +27,12 @@ public class BoardUI {
     private JButton gems[];
     private JButton cards[][];
     private PlayerPanel players[];
+    private JButton collect, reset, buy, reserve;
+
+    private JMenuItem newGame;
+    private JMenuItem exit;
+
+
 
 
     private int ratio;
@@ -34,14 +40,62 @@ public class BoardUI {
     public BoardUI() {
         ratio = 70;
         window = new JFrame("Splendor");
-        window.setPreferredSize(new Dimension(16*ratio,9*ratio));
-        window.setMaximumSize(new Dimension(16*ratio,9*ratio));
-        window.setMinimumSize(new Dimension(16*ratio,9*ratio));
+        window.setPreferredSize(new Dimension(16*ratio,10*ratio));
+        window.setMaximumSize(new Dimension(16*ratio,10*ratio));
+        window.setMinimumSize(new Dimension(16*ratio,10*ratio));
+
+        final JMenuBar menuBar = createMenuBar();
+        this.window.setJMenuBar(menuBar);
 
         setLayout();
 
         window.setVisible(true);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public BoardUI(Game game) {
+        ratio = 70;
+        window = new JFrame("Splendor");
+        window.setPreferredSize(new Dimension(16*ratio,10*ratio));
+        window.setMaximumSize(new Dimension(16*ratio,10*ratio));
+        window.setMinimumSize(new Dimension(16*ratio,10*ratio));
+
+        final JMenuBar menuBar = createMenuBar();
+        this.window.setJMenuBar(menuBar);
+
+        this.setLayout();
+        this.updateByGame(game);
+        window.setVisible(true);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    private void updateByGame(Game game){
+        return;
+    }
+    /**
+     * The init function to set up the menu bar
+     * @return the menu bar to be created
+     */
+    private JMenuBar createMenuBar(){
+        JMenuBar menuBar = new JMenuBar();
+        final JMenu fileMenu = new JMenu("File");
+        newGame = new JMenuItem("New");
+        exit = new JMenuItem("Exit");
+        fileMenu.add(newGame);
+        fileMenu.add(exit);
+        menuBar.add(fileMenu);
+        return menuBar;
+    }
+
+    /*
+    The following methods are used to add listeners to the JMenubar.
+     */
+    public void addNewGameListener(ActionListener a) {
+        newGame.addActionListener(a);
+    }
+
+    public void addExitListener(ActionListener a) {
+        exit.addActionListener(a);
     }
 
     public JButton[] getGems(){
@@ -56,13 +110,29 @@ public class BoardUI {
         return this.cards;
     }
 
+    public JButton getReset(){
+        return this.reset;
+    }
+
+    public JButton getCollect(){
+        return this.collect;
+    }
+
+    public JButton getBuy(){
+        return this.buy;
+    }
+
+    public JButton getReserve(){
+        return this.reserve;
+    }
+
     private void setLayout() {
 
-        game = new JPanel();
-        game.setPreferredSize(new Dimension(13*ratio,9*ratio));
-        game.setLayout(null);
+        gameArea = new JPanel();
+        gameArea.setPreferredSize(new Dimension(13*ratio,9*ratio));
+        gameArea.setLayout(null);
         setGameBoard();
-        window.add(game,BorderLayout.WEST);
+        window.add(gameArea,BorderLayout.WEST);
 
         playerArea = new JPanel();
         playerArea.setPreferredSize(new Dimension(3*ratio,9*ratio));
@@ -78,18 +148,18 @@ public class BoardUI {
             nobles[i] = new JPanel(new BorderLayout());
             nobles[i].setBounds(offset+150 * (i+1) *ratio/100, 50*ratio/100, ratio,ratio);
             nobles[i].setBackground(Color.black);
-            game.add(nobles[i]);
+            gameArea.add(nobles[i]);
         }
 
         gold = new JButton("gold");
         gold.setBounds(75*ratio/100,200*ratio/100-50, ratio, ratio);
 
-        game.add(gold);
+        gameArea.add(gold);
         gems = new JButton[5];
         for (int i=0;i<5;i++) {
             gems[i] = new JButton("tmp");
             gems[i].setBounds(75*ratio/100, (775-125*i)*ratio/100, ratio, ratio);
-            game.add(gems[i]);
+            gameArea.add(gems[i]);
         }
 
         decks = new JPanel[NUM_CARD_RANK];
@@ -98,7 +168,7 @@ public class BoardUI {
             //load image
             decks[i].setBounds(offset+ratio, (200+225*i)*ratio/100, 150*ratio/100,200*ratio/100);
             decks[i].setBackground(Color.orange);
-            game.add(decks[i]);
+            gameArea.add(decks[i]);
         }
 
 
@@ -107,9 +177,25 @@ public class BoardUI {
             for (int j=0;j<NUM_CARD_PER_RANK;j++) {
                 cards[i][j] = new JButton();
                 cards[i][j].setBounds(offset+(250+150*j)*ratio/100, (200+225*i)*ratio/100, 150*ratio/100,200*ratio/100);
-                game.add(cards[i][j]);
+                gameArea.add(cards[i][j]);
             }
         }
+
+        collect = new JButton("Collect");
+        collect.setBounds(11*ratio, 2*ratio, ratio, ratio);
+        gameArea.add(collect);
+
+        reset = new JButton("Reset");
+        reset.setBounds(11*ratio, 3*ratio, ratio, ratio);
+        gameArea.add(reset);
+
+        buy = new JButton("Buy");
+        buy.setBounds(11*ratio, 4*ratio, ratio, ratio);
+        gameArea.add(buy);
+
+        reserve = new JButton("Reserve");
+        reserve.setBounds(11*ratio, 5*ratio, ratio, ratio);
+        gameArea.add(reserve);
     }
 
     private void setPlayerArea() {
