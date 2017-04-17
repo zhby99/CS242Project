@@ -1,5 +1,6 @@
 package View;
 
+import Model.Noble;
 import Model.Player;
 import Model.utils.GemInfo;
 
@@ -75,7 +76,17 @@ public class BoardUI {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private void updateByGame(Game game){
+    public void updateByGame(Game game){
+        Noble[] nobles = game.gameBoard.getNobles();
+        for (int i=0;i<NUM_PLAYER+1;i++) {
+            if(!nobles[i].getIsRecruited()){
+                Noble nobleInput = new Noble(nobles[i].getThreshold().diamond, nobles[i].getThreshold().emerald, nobles[i].getThreshold().onyx, nobles[i].getThreshold().ruby, nobles[i].getThreshold().sapphire);
+                this.nobles[i].add(new NoblePanel(nobleInput,nobleImages), BorderLayout.CENTER);
+            }
+            else {
+                this.nobles[i].removeAll();
+            }
+        }
         return;
     }
     /**
