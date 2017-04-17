@@ -4,12 +4,16 @@ import Model.Player;
 import Model.utils.GemInfo;
 
 import java.awt.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.util.Hashtable;
 
 import static Model.utils.GameUtils.*;
+import static View.utils.ViewUtils.*;
 import Game.Game;
 
 /**
@@ -32,17 +36,18 @@ public class BoardUI {
     private JMenuItem newGame;
     private JMenuItem exit;
 
-
-
-
-    private int ratio;
+    private Hashtable<String, Image> cardImages = new Hashtable<String, Image>();
+    private Hashtable<String, Image> gemImages = new Hashtable<String, Image>();
+    private Hashtable<String, Image> nobleImages = new Hashtable<String, Image>();
+    Image backgroundImage;
 
     public BoardUI() {
-        ratio = 70;
+
+        loadImagesInMemory();
         window = new JFrame("Splendor");
-        window.setPreferredSize(new Dimension(20*ratio,10*ratio));
-        window.setMaximumSize(new Dimension(20*ratio,10*ratio));
-        window.setMinimumSize(new Dimension(20*ratio,10*ratio));
+        window.setPreferredSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
+        window.setMaximumSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
+        window.setMinimumSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
 
         final JMenuBar menuBar = createMenuBar();
         this.window.setJMenuBar(menuBar);
@@ -54,11 +59,12 @@ public class BoardUI {
     }
 
     public BoardUI(Game game) {
-        ratio = 70;
+
+        loadImagesInMemory();
         window = new JFrame("Splendor");
-        window.setPreferredSize(new Dimension(16*ratio,10*ratio));
-        window.setMaximumSize(new Dimension(16*ratio,10*ratio));
-        window.setMinimumSize(new Dimension(16*ratio,10*ratio));
+        window.setPreferredSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
+        window.setMaximumSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
+        window.setMinimumSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
 
         final JMenuBar menuBar = createMenuBar();
         this.window.setJMenuBar(menuBar);
@@ -126,16 +132,56 @@ public class BoardUI {
         return this.reserve;
     }
 
+    //Store the image to the selected dict and use the truncated filename as key
+    public void storeInMap(Hashtable<String,Image> dict, int offset, File f, int w, int h){
+        try {
+            BufferedImage img = null;
+            img = ImageIO.read(f);
+            Image dimg = img.getScaledInstance(w,h,Image.SCALE_SMOOTH);
+            String img_name = f.getName();
+            dict.put(img_name.substring(0,img_name.length()-offset),dimg);
+        }catch (final IOException e) {
+            // handle errors here
+            System.out.println("Images read error");
+        }
+    }
+
+    //load images in dir to memory
+    public void loadImagesInMemory(){
+        final File dir = new File("src/View/img");
+        if (dir.isDirectory()) { // make sure it's a directory
+            for (final File f : dir.listFiles()) {
+                //load images of gems
+                if(f.getName().endsWith("Gem.png")){
+                    storeInMap(gemImages,7,f,GEM_WIDTH,GEM_HEIGHT);
+                }
+                //load images of nobles
+                else if(f.getName().endsWith("Noble.jpg")){
+                    storeInMap(nobleImages,9,f,NOBLE_WIDTH,NOBLE_HEIGHT);
+                }
+                //load images of cards
+                else{
+                    storeInMap(cardImages,4,f,CARD_WIDTH,CARD_HEIGHT);
+                }
+            }
+        }
+    }
+
     private void setLayout() {
 
-        gameArea = new JPanel();
-        gameArea.setPreferredSize(new Dimension(13*ratio,9*ratio));
+        try {
+            gameArea = new GamePanel();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        gameArea.setPreferredSize(new Dimension(GAME_WIDTH,GAME_HEIGHT));
         gameArea.setLayout(null);
         setGameBoard();
         window.add(gameArea,BorderLayout.WEST);
 
         playerArea = new JPanel();
-        playerArea.setPreferredSize(new Dimension(7*ratio,9*ratio));
+        playerArea.setPreferredSize(new Dimension(PLAYER_WIDTH,PLAYER_HEIGHT));
         setPlayerArea();
         window.add(playerArea,BorderLayout.EAST);
     }
