@@ -3,13 +3,10 @@ package Controller;
 import Game.Game;
 import Model.Card;
 import Model.utils.GemInfo;
-import UI.BoardUI;
+import View.BoardUI;
 
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 
 /**
