@@ -24,7 +24,7 @@ public class Controller {
 
     public Controller(){
         this.game = new Game();
-        this.boardUI = new BoardUI();
+        this.boardUI = new BoardUI(game);
         this.currentGemInfo = new GemInfo(0);
         addMenuItemListener();
         addGemsListener();
