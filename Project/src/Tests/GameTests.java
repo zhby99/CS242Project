@@ -19,9 +19,9 @@ public class GameTests {
     public void endConditionTest() throws Exception{
         Game game = new Game();
         game.players[0].updateScore(1);
-        assertFalse(game.checkEndofGame());
+        assertEquals(game.checkEndofGame(),0);
         game.players[1].updateScore(15);
-        assertTrue(game.checkEndofGame());
+        assertEquals(game.checkEndofGame(),1);
     }
 
     @Test
