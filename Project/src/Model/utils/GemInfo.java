@@ -90,6 +90,14 @@ public class GemInfo implements Iterable<Integer>{
         return gemNum;
     }
 
+    public boolean isSatisfied(GemInfo cards){
+        return this.diamond <= cards.diamond
+                && this.emerald <= cards.emerald
+                && this.onyx <= cards.onyx
+                && this.ruby <= cards.ruby
+                && this.sapphire <= cards.sapphire;
+    }
+
 
     @Override
     public boolean equals(Object o) {
