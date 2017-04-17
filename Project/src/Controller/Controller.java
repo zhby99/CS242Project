@@ -9,6 +9,8 @@ import View.BoardUI;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import static Model.utils.GameUtils.*;
@@ -76,6 +78,8 @@ public class Controller {
                 currentGemInfo.updateInfo(1,0,0,0,0);
             }
         });
+
+
 
         this.boardUI.getGems()[3].addActionListener(new ActionListener() {
             @Override
@@ -174,7 +178,7 @@ public class Controller {
                 else{
                     currentGemInfo.reset();
                     game.turnToNextPlayer();
-                    //Todo : update UI
+                    boardUI.updateByGame(game);
                 }
 
             }
@@ -224,7 +228,7 @@ public class Controller {
                         }
                     }
                     game.turnToNextPlayer();
-                    //Todo : update UI
+                    boardUI.updateByGame(game);
                 }
 
             }
@@ -252,7 +256,7 @@ public class Controller {
                 else{
                     selectedCard = null;
                     game.turnToNextPlayer();
-                    //Todo : update UI
+                    boardUI.updateByGame(game);
                 }
             }
         });

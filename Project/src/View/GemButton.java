@@ -31,7 +31,7 @@ public class GemButton extends JButton {
 
         this.setOpaque(false);
         this.setContentAreaFilled(false);
-        //this.setBorderPainted(false);
+        this.setBorderPainted(false);
         this.setIcon(new ImageIcon(buffered));
 
     }
