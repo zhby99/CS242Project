@@ -1,9 +1,13 @@
-package UI;
+package View;
 
+import Model.Player;
 import Model.utils.GemInfo;
 
 import java.awt.*;
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 import static Model.utils.GameUtils.*;
@@ -17,10 +21,7 @@ public class BoardUI {
     private JPanel game;
     private JPanel playerArea;
 
-    private JPanel noblesPanel;
-    private JPanel gemsPanel;
-    private JPanel cardsPanel;
-
+    private JPanel decks[];
     private JPanel nobles[];
     private JButton gold;
     private JButton gems[];
@@ -28,7 +29,6 @@ public class BoardUI {
     private PlayerPanel players[];
 
 
-    private int eb = 5;
     private int ratio;
 
     public BoardUI() {
@@ -72,49 +72,44 @@ public class BoardUI {
 
     private void setGameBoard() {
 
-//        noblesPanel = new JPanel();
-//        noblesPanel.setLayout(new BoxLayout(noblesPanel, BoxLayout.X_AXIS));
-//        noblesPanel.setSize(16*ratio,ratio);
+        int offset = ratio * 2;
         nobles = new JPanel[NUM_PLAYER+1];
         for (int i=0;i<NUM_PLAYER+1;i++){
             nobles[i] = new JPanel(new BorderLayout());
-            nobles[i].setBounds(150 * (i+1) *ratio/100, 50*ratio/100, ratio,ratio);
+            nobles[i].setBounds(offset+150 * (i+1) *ratio/100, 50*ratio/100, ratio,ratio);
             nobles[i].setBackground(Color.black);
-//            nobles[i].setSize(ratio,ratio);
-//            nobles[i].setLocation(150 * (i+1) *ratio/100, 50*ratio/100);
             game.add(nobles[i]);
         }
-        //game.add(noblesPanel, BorderLayout.PAGE_START);
 
-//        gemsPanel = new JPanel();
-//        gemsPanel.setLayout(new BoxLayout(gemsPanel, BoxLayout.Y_AXIS));
-//        gemsPanel.setSize(625, 100);
         gold = new JButton("gold");
-        gold.setBounds(75*ratio/100,200*ratio/100, 10, 10);
-//        gold.setLocation(0,0);
-//        gemsPanel.add(gold);
+        gold.setBounds(75*ratio/100,200*ratio/100-50, ratio, ratio);
+
         game.add(gold);
         gems = new JButton[5];
         for (int i=0;i<5;i++) {
             gems[i] = new JButton("tmp");
-            gems[i].setBounds(75*ratio/100, (825-125*i)*ratio/100, 10, 10);
-            //gemsPanel.add(gems[i]);
+            gems[i].setBounds(75*ratio/100, (775-125*i)*ratio/100, ratio, ratio);
             game.add(gems[i]);
         }
-//        gemsPanel.setLocation(75*ratio/100,200*ratio/100);
-//        game.add(gemsPanel);
-//        game.add(gemsPanel, BorderLayout.LINE_START);
 
-        //cardsPanel = new JPanel();
+        decks = new JPanel[NUM_CARD_RANK];
+        for(int i = 0 ; i< NUM_CARD_RANK; i++){
+            decks[i] = new JPanel();
+            //load image
+            decks[i].setBounds(offset+ratio, (200+225*i)*ratio/100, 150*ratio/100,200*ratio/100);
+            decks[i].setBackground(Color.orange);
+            game.add(decks[i]);
+        }
+
+
         cards = new JButton[NUM_CARD_RANK][NUM_CARD_PER_RANK];
         for (int i=0;i<NUM_CARD_RANK;i++){
             for (int j=0;j<NUM_CARD_PER_RANK;j++) {
                 cards[i][j] = new JButton();
-                cards[i][j].setBounds((250+150*j)*ratio/100, (200+225*i)*ratio/100, 150*ratio/100,200*ratio/100);
+                cards[i][j].setBounds(offset+(250+150*j)*ratio/100, (200+225*i)*ratio/100, 150*ratio/100,200*ratio/100);
                 game.add(cards[i][j]);
             }
         }
-        //game.add(cardsPanel);
     }
 
     private void setPlayerArea() {
@@ -124,6 +119,7 @@ public class BoardUI {
         for (int i=0;i<NUM_PLAYER;i++){
             players[i] = new PlayerPanel();
             players[i].setPreferredSize(new Dimension(3*ratio,9*ratio/NUM_PLAYER));
+
             playerArea.add(players[i]);
         }
     }
@@ -143,6 +139,18 @@ public class BoardUI {
             setGems(new GemInfo(0),0);
             setCards(new GemInfo(0));
 
+            this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+            this.add(status);
+            this.add(gems);
+            this.add(cards);
+        }
+
+        private PlayerPanel(Player player,boolean current) {
+
+            //need input of controller
+            setStatus(player.getId(),player.getScore(),current);
+            setGems(new GemInfo(0),0);
+            setCards(new GemInfo(0));
 
             this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
             this.add(status);
@@ -150,23 +158,34 @@ public class BoardUI {
             this.add(cards);
         }
 
+
         private void setStatus(int id, int score, boolean indicator){
+
+            int width = ratio;
+            int height = ratio*3/NUM_PLAYER;
+
             status = new JPanel();
             status.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
 
             JLabel idLabel = new JLabel(Integer.toString(id),JLabel.CENTER);
-            idLabel.setPreferredSize(new Dimension(ratio,ratio*3/NUM_PLAYER));
+            idLabel.setPreferredSize(new Dimension(width,height));
             status.add(idLabel);
 
             JLabel scoreLabel = new JLabel(Integer.toString(score),JLabel.CENTER);
-            scoreLabel.setPreferredSize(new Dimension(ratio,ratio*3/NUM_PLAYER));
+            scoreLabel.setPreferredSize(new Dimension(width,height));
             status.add(scoreLabel);
 
             JLabel indicatorLabel;
-            if(indicator)
-                indicatorLabel = new JLabel("true",JLabel.CENTER);
+            BufferedImage buffered = new BufferedImage(width,height, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = buffered.createGraphics();
+            if(indicator) {
+                g2d.setColor(Color.GREEN);
+            }
             else
-                indicatorLabel = new JLabel("false",JLabel.CENTER);
+                g2d.setColor(Color.RED);
+            g2d.fillOval(width*3/8,height*3/8,width/4,width/4);
+            ImageIcon icon= new ImageIcon(buffered);
+            indicatorLabel = new JLabel(icon, JLabel.CENTER);
             indicatorLabel.setPreferredSize(new Dimension(ratio,ratio*3/NUM_PLAYER));
             status.add(indicatorLabel);
         }
@@ -176,8 +195,8 @@ public class BoardUI {
             gems = new JPanel();
             gems.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
             for(int i = 1; i <= 5; i++){
-                int bonus = gemInfo.getByIndex(i);
-                JLabel gemLabel = new JLabel(Integer.toString(bonus),JLabel.CENTER);
+                int gem = gemInfo.getByIndex(i);
+                JLabel gemLabel = new JLabel(Integer.toString(gem),JLabel.CENTER);
                 gemLabel.setPreferredSize(new Dimension(ratio/2,ratio*3/NUM_PLAYER));
                 gems.add(gemLabel);
             }
