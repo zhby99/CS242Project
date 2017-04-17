@@ -42,13 +42,14 @@ public class Game {
      * Used to check if the someone won.
      * @return
      */
-    public final boolean checkEndofGame(){
+    public final int checkEndofGame(){
+        int numberOfWining = 0;
         for(Player player: this.players){
             if(player.hasWon()){
-                return true;
+                numberOfWining += 1;
             }
         }
-        return false;
+        return numberOfWining;
     }
 
     /**
