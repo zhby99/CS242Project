@@ -44,6 +44,18 @@ public class BoardUI {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    public JButton[] getGems(){
+        return this.gems;
+    }
+
+    public JButton getGold(){
+        return this.gold;
+    }
+
+    public JButton[][] getCards(){
+        return this.cards;
+    }
+
     private void setLayout() {
 
         game = new JPanel();
