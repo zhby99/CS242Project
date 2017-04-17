@@ -4,19 +4,19 @@ package Model;
  * Created by wu on 4/8/17.
  */
 public enum Gem {
-    DIAMOND("D",1){
+    DIAMOND("Diamond",1){
 
     },
-    EMERALD("E",2) {
+    EMERALD("Emerald",2) {
 
     },
-    ONYX("O", 3){
+    ONYX("Onyx", 3){
 
     },
-    RUBY("R", 4){
+    RUBY("Ruby", 4){
 
     },
-    SAPPHIRE("S", 5){
+    SAPPHIRE("Sapphire", 5){
 
     };
 

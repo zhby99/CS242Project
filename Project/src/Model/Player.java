@@ -53,71 +53,71 @@ public class Player {
 
 
 
-    /**
-     * add a new card to the player's own cards
-     * @param newCard
-     */
+	/**
+	 * add a new card to the player's own cards
+	 * @param newCard
+	 */
 	public void addNewCard(Card newCard){
-        Gem gemType = newCard.getTargetGem();
-        String gemName = gemType.getGemName();
-        switch (gemName) {
-            case "D":
-                cards.diamond+=1;
-                break;
-            case "E":
-                cards.emerald+=1;
-                break;
-            case "O":
-                cards.onyx+=1;
-                break;
-            case "R":
-                cards.ruby+=1;
-                break;
-            case "S":
-                cards.sapphire+=1;
-                break;
-        }
-        this.score += newCard.getCardScore();
-    }
+		Gem gemType = newCard.getTargetGem();
+		String gemName = gemType.getGemName();
+		switch (gemName) {
+			case "Diamond":
+				cards.diamond+=1;
+				break;
+			case "Emerald":
+				cards.emerald+=1;
+				break;
+			case "Onyx":
+				cards.onyx+=1;
+				break;
+			case "Ruby":
+				cards.ruby+=1;
+				break;
+			case "Sapphire":
+				cards.sapphire+=1;
+				break;
+		}
+		this.score += newCard.getCardScore();
+	}
 
 
-    /**
-     * Buy a new card
-     * @param newCard
-     * @param isReserved whether the card is reserved or not
-     * @return whether the player can buy the card
-     */
+	/**
+	 * Buy a new card
+	 * @param newCard
+	 * @param isReserved whether the card is reserved or not
+	 * @return whether the player can buy the card
+	 */
 	public boolean buyCard(Card newCard, boolean isReserved){
-        GemInfo requiredGem = newCard.getDevelopmentCost();
-        GemInfo restGem = newCard.getDevelopmentCost();
-        //requiredGem is the gem we need to pay for this card
-        reduceGems(requiredGem,this.cards);
-        //restGem is the number of gems we still need to buy this card when we spend all of our gems
-        reduceGems(restGem, this.cards);
-        reduceGems(restGem,this.gems);
+		GemInfo requiredGem = newCard.getDevelopmentCost();
+		GemInfo restGem = newCard.getDevelopmentCost();
+		//requiredGem is the gem we need to pay for this card
+		reduceGems(requiredGem,this.cards);
+		//restGem is the number of gems we still need to buy this card when we spend all of our gems
+		reduceGems(restGem, this.cards);
+		reduceGems(restGem,this.gems);
 
-        //if the restGem is negative, then we have enough this kind of gem, so set it to 0.
-        restGem.setGems(max(restGem.diamond, 0), max(restGem.emerald, 0), max(restGem.onyx, 0), max(restGem.ruby, 0), max(restGem.sapphire, 0));
-        requiredGem.setGems(max(requiredGem.diamond, 0), max(requiredGem.emerald, 0), max(requiredGem.onyx, 0), max(requiredGem.ruby, 0), max(requiredGem.sapphire, 0));
+		//if the restGem is negative, then we have enough this kind of gem, so set it to 0.
+		restGem.setGems(max(restGem.diamond, 0), max(restGem.emerald, 0), max(restGem.onyx, 0), max(restGem.ruby, 0), max(restGem.sapphire, 0));
+		requiredGem.setGems(max(requiredGem.diamond, 0), max(requiredGem.emerald, 0), max(requiredGem.onyx, 0), max(requiredGem.ruby, 0), max(requiredGem.sapphire, 0));
 
-        //if the restGem is smaller than the number of golds, we can use golds to pay the rest gems.
-        if( restGem.diamond + restGem.emerald + restGem.onyx + restGem.ruby + restGem.sapphire <= golds ) {
-            reduceGems(this.gems, requiredGem);
-            this.golds -= (restGem.diamond + restGem.emerald + restGem.onyx + restGem.ruby + restGem.sapphire);
-            board.changeGold(restGem.diamond + restGem.emerald + restGem.onyx + restGem.ruby + restGem.sapphire);
-            board.changeGem(requiredGem);
-            this.gems.setGems(max(this.gems.diamond, 0), max(this.gems.emerald, 0), max(this.gems.onyx, 0), max(this.gems.ruby, 0), max(this.gems.sapphire, 0));
-            if(isReserved) {
-                reserves.remove(newCard);
-                addNewCard(newCard);
-                return true;
-            }
-            else {
-                addNewCard(newCard);
-                return true;
-            }
-        }
-        return false;
+		//if the restGem is smaller than the number of golds, we can use golds to pay the rest gems.
+		if( restGem.diamond + restGem.emerald + restGem.onyx + restGem.ruby + restGem.sapphire <= golds ) {
+			reduceGems(this.gems, requiredGem);
+			this.golds -= (restGem.diamond + restGem.emerald + restGem.onyx + restGem.ruby + restGem.sapphire);
+			board.changeGold(restGem.diamond + restGem.emerald + restGem.onyx + restGem.ruby + restGem.sapphire);
+			board.changeGem(requiredGem);
+			this.gems.setGems(max(this.gems.diamond, 0), max(this.gems.emerald, 0), max(this.gems.onyx, 0), max(this.gems.ruby, 0), max(this.gems.sapphire, 0));
+			if(isReserved) {
+				reserves.remove(newCard);
+				addNewCard(newCard);
+				return true;
+			}
+			else {
+				addNewCard(newCard);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
