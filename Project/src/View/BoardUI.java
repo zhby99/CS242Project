@@ -247,7 +247,7 @@ public class BoardUI {
     private void setPlayerArea() {
 
         playerArea.setLayout(new BoxLayout(playerArea,BoxLayout.Y_AXIS));
-        PlayerPanel players[] = new PlayerPanel[NUM_PLAYER];
+        players = new PlayerPanel[NUM_PLAYER];
         for (int i=0;i<NUM_PLAYER;i++){
             players[i] = new PlayerPanel();
             players[i].setPreferredSize(new Dimension(7*ratio,9*ratio/NUM_PLAYER));
