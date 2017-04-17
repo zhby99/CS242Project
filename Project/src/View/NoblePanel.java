@@ -2,7 +2,6 @@ package View;
 
 import Model.Noble;
 import Model.utils.GemInfo;
-import View.utils.ViewUtils;
 
 import javax.swing.*;
 import java.awt.*;

@@ -18,12 +18,13 @@ public class ViewUtils {
     public final static int GAME_HEIGHT=10*ratio;
     public final static int PLAYER_WIDTH=3*ratio;
     public final static int PLAYER_HEIGHT=10*ratio;
+
     public final static int CARD_WIDTH = ratio*3/2;
-    public final static int CARD_HEIGHT = ratio*3;
+    public final static int CARD_HEIGHT = ratio*2;
     public final static int GEM_WIDTH = ratio;
     public final static int GEM_HEIGHT = ratio;
-    public final static int NOBLE_WIDTH = ratio;
-    public final static int NOBLE_HEIGHT = ratio;
+    public final static int NOBLE_WIDTH = ratio*5/4;
+    public final static int NOBLE_HEIGHT = ratio*5/4;
 
 
     public final static Color customWhite = new Color(246,247,248);
