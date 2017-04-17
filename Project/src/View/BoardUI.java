@@ -40,9 +40,9 @@ public class BoardUI {
     public BoardUI() {
         ratio = 70;
         window = new JFrame("Splendor");
-        window.setPreferredSize(new Dimension(16*ratio,10*ratio));
-        window.setMaximumSize(new Dimension(16*ratio,10*ratio));
-        window.setMinimumSize(new Dimension(16*ratio,10*ratio));
+        window.setPreferredSize(new Dimension(20*ratio,10*ratio));
+        window.setMaximumSize(new Dimension(20*ratio,10*ratio));
+        window.setMinimumSize(new Dimension(20*ratio,10*ratio));
 
         final JMenuBar menuBar = createMenuBar();
         this.window.setJMenuBar(menuBar);
@@ -135,7 +135,7 @@ public class BoardUI {
         window.add(gameArea,BorderLayout.WEST);
 
         playerArea = new JPanel();
-        playerArea.setPreferredSize(new Dimension(3*ratio,9*ratio));
+        playerArea.setPreferredSize(new Dimension(7*ratio,9*ratio));
         setPlayerArea();
         window.add(playerArea,BorderLayout.EAST);
     }
@@ -204,7 +204,7 @@ public class BoardUI {
         PlayerPanel players[] = new PlayerPanel[NUM_PLAYER];
         for (int i=0;i<NUM_PLAYER;i++){
             players[i] = new PlayerPanel();
-            players[i].setPreferredSize(new Dimension(3*ratio,9*ratio/NUM_PLAYER));
+            players[i].setPreferredSize(new Dimension(7*ratio,9*ratio/NUM_PLAYER));
 
             playerArea.add(players[i]);
         }
@@ -213,7 +213,8 @@ public class BoardUI {
     public class PlayerPanel extends JPanel{
 
         //need the input of controller
-
+        JPanel info;
+        JButton reservedCards[];
         JPanel status;
         JPanel gems;
         JPanel cards;
@@ -221,14 +222,25 @@ public class BoardUI {
         private PlayerPanel() {
 
             //need input of controller
+            info = new JPanel();
+            info.setLayout(new BoxLayout(info , BoxLayout.Y_AXIS));
             setStatus(1,5,true);
             setGems(new GemInfo(0),0);
             setCards(new GemInfo(0));
 
-            this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-            this.add(status);
-            this.add(gems);
-            this.add(cards);
+            info.add(status);
+            info.add(gems);
+            info.add(cards);
+
+            this.setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
+            this.add(info);
+
+            reservedCards = new JButton[3];
+            for (int i=0;i<3;i++){
+                reservedCards[i] = new JButton();
+                reservedCards[i].setPreferredSize(new Dimension(75, 100));
+                this.add(reservedCards[i]);
+            }
         }
 
         private PlayerPanel(Player player,boolean current) {
