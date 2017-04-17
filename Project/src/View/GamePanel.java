@@ -1,7 +1,5 @@
 package View;
 
-import View.utils.ViewUtils;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
