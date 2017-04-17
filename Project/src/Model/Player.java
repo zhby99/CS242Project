@@ -191,6 +191,17 @@ public class Player {
 		return true;
 	}
 
+    public void recruitAvailableNobles(){
+	    for(Noble noble : this.board.getNobles()){
+            if(noble.satisfied(this.cards) && noble.getIsRecruited() == false){
+                noble.beRecruited();
+                this.score += noble.getScore();
+            }
+        }
+    }
+
+
+
 	/**
 	 * Check if the player has won
 	 * @return true if the player won

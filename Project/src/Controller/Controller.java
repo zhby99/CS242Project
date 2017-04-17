@@ -2,6 +2,7 @@ package Controller;
 
 import Game.Game;
 import Model.Card;
+import Model.Player;
 import Model.utils.GemInfo;
 import View.BoardUI;
 
@@ -169,6 +170,28 @@ public class Controller {
                 }
                 else{
                     selectedCard = null;
+                    game.getCurrentPlayer().recruitAvailableNobles();
+                    if(game.getCurrentPlayer().getId() == 4){
+                        int numberOfWining = game.checkEndofGame();
+                        if(numberOfWining == 1){
+                            for(Player player : game.getPlayers()){
+                                if(player.hasWon()){
+                                    int replyNewGame = JOptionPane.showConfirmDialog(null,
+                                            "Player " +player.getId()+" win! Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
+                                    if(replyNewGame==JOptionPane.YES_OPTION) {
+                                        //Todo: new game
+                                    }
+                                }
+                            }
+                        }
+                        else if(numberOfWining >1){
+                            int replyNewGame = JOptionPane.showConfirmDialog(null,
+                                    "Tie! Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
+                            if(replyNewGame==JOptionPane.YES_OPTION) {
+                                //Todo: new game
+                            }
+                        }
+                    }
                     game.turnToNextPlayer();
                     //Todo : update UI
                 }
