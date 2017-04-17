@@ -29,6 +29,7 @@ public class BoardUI {
     private JButton gems[];
     private JButton cards[][];
     private PlayerPanel players[];
+    private JButton collect, reset, buy, reserve;
 
     private JMenuItem newGame;
     private JMenuItem exit;
@@ -41,9 +42,9 @@ public class BoardUI {
     public BoardUI() {
         ratio = 70;
         window = new JFrame("Splendor");
-        window.setPreferredSize(new Dimension(16*ratio,9*ratio));
-        window.setMaximumSize(new Dimension(16*ratio,9*ratio));
-        window.setMinimumSize(new Dimension(16*ratio,9*ratio));
+        window.setPreferredSize(new Dimension(16*ratio,10*ratio));
+        window.setMaximumSize(new Dimension(16*ratio,10*ratio));
+        window.setMinimumSize(new Dimension(16*ratio,10*ratio));
 
         final JMenuBar menuBar = createMenuBar();
         this.window.setJMenuBar(menuBar);
@@ -148,6 +149,22 @@ public class BoardUI {
                 game.add(cards[i][j]);
             }
         }
+
+        collect = new JButton("Collect");
+        collect.setBounds(11*ratio, 2*ratio, ratio, ratio);
+        game.add(collect);
+
+        reset = new JButton("Reset");
+        reset.setBounds(11*ratio, 3*ratio, ratio, ratio);
+        game.add(reset);
+
+        buy = new JButton("Buy");
+        buy.setBounds(11*ratio, 4*ratio, ratio, ratio);
+        game.add(buy);
+
+        reserve = new JButton("Reserve");
+        reserve.setBounds(11*ratio, 5*ratio, ratio, ratio);
+        game.add(reserve);
     }
 
     private void setPlayerArea() {
