@@ -6,6 +6,8 @@ import Model.utils.GemInfo;
 import java.awt.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +30,11 @@ public class BoardUI {
     private JButton cards[][];
     private PlayerPanel players[];
 
+    private JMenuItem newGame;
+    private JMenuItem exit;
+
+
+
 
     private int ratio;
 
@@ -38,10 +45,41 @@ public class BoardUI {
         window.setMaximumSize(new Dimension(16*ratio,9*ratio));
         window.setMinimumSize(new Dimension(16*ratio,9*ratio));
 
+        final JMenuBar menuBar = createMenuBar();
+        this.window.setJMenuBar(menuBar);
+
         setLayout();
 
         window.setVisible(true);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+    }
+
+    /**
+     * The init function to set up the menu bar
+     * @return the menu bar to be created
+     */
+    private JMenuBar createMenuBar(){
+        JMenuBar menuBar = new JMenuBar();
+        final JMenu fileMenu = new JMenu("File");
+        newGame = new JMenuItem("New");
+        exit = new JMenuItem("Exit");
+        fileMenu.add(newGame);
+        fileMenu.add(exit);
+        menuBar.add(fileMenu);
+        return menuBar;
+    }
+
+    /*
+    The following methods are used to add listeners to the JMenubar.
+     */
+    public void addNewGameListener(ActionListener a) {
+        newGame.addActionListener(a);
+    }
+
+    public void addExitListener(ActionListener a) {
+        exit.addActionListener(a);
     }
 
     public JButton[] getGems(){

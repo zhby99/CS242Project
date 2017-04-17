@@ -22,8 +22,42 @@ public class Controller {
         this.game = new Game();
         this.boardUI = new BoardUI();
         this.currentGemInfo = new GemInfo(0);
+        addMenuItemListener();
         addGemsListener();
         addCardListeners();
+    }
+
+    /**
+     * Helper function to help initialize the gui
+     */
+    private void addMenuItemListener(){
+        addNewGameListener();
+        addExitListener();
+    }
+
+    /**
+     * for JMenubar New
+     */
+    private void addNewGameListener() {
+        boardUI.addNewGameListener(new ActionListener(){
+            public void actionPerformed(ActionEvent event) {
+                game = new Game();
+                boardUI = new BoardUI();
+                currentGemInfo = new GemInfo(0);
+                selectedCard = null;
+            }
+        });
+    }
+
+    /**
+     * for JMenubar Exit
+     */
+    private void addExitListener() {
+        boardUI.addExitListener(new ActionListener(){
+            public void actionPerformed(ActionEvent event) {
+                System.exit(0);
+            }
+        });
     }
 
 
