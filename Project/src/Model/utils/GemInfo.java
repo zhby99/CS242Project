@@ -1,10 +1,14 @@
 package Model.utils;
 
+import java.util.Iterator;
+import java.util.function.Consumer;
+
 import static java.lang.Math.*;
 /**
  * Created by boyinzhang on 4/8/17.
  */
-public class GemInfo {
+public class GemInfo implements Iterable<Integer>{
+
     public int diamond;
     public int emerald;
     public int onyx;
@@ -20,17 +24,6 @@ public class GemInfo {
         this.sapphire = numSapphire;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null) return false;
-        if (o == this) return true;
-        if (!(o instanceof GemInfo))return false;
-        GemInfo other = (GemInfo)o;
-
-        return (this.diamond == other.diamond && this.emerald == other.emerald
-                && this.onyx == other.onyx && this.ruby == other.ruby
-                && this.sapphire == other.sapphire);
-    }
 
     public GemInfo(int numberPerGem){
         this(numberPerGem,numberPerGem,numberPerGem,numberPerGem,numberPerGem);
@@ -78,5 +71,55 @@ public class GemInfo {
         currentGems.onyx -= addGems.onyx;
         currentGems.ruby -= addGems.ruby;
         currentGems.sapphire -= addGems.sapphire;
+    }
+
+    public int getByIndex(int index){
+        int gemNum = 0;
+        switch (index){
+            case 1: gemNum = diamond; break;
+            case 2: gemNum = emerald; break;
+            case 3: gemNum = onyx; break;
+            case 4: gemNum = ruby; break;
+            case 5: gemNum = sapphire; break;
+            default: gemNum = 0; break;
+        }
+        return gemNum;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) return false;
+        if (o == this) return true;
+        if (!(o instanceof GemInfo))return false;
+        GemInfo other = (GemInfo)o;
+
+        return (this.diamond == other.diamond && this.emerald == other.emerald
+                && this.onyx == other.onyx && this.ruby == other.ruby
+                && this.sapphire == other.sapphire);
+    }
+
+    public Iterator<Integer> iterator() {
+        return new MyIterator();
+    }
+
+    class MyIterator implements Iterator<Integer> {
+
+        private int index = 0;
+
+        public boolean hasNext() {
+            return index < 5;
+        }
+
+        public Integer next() {
+            int gemNum = 0;
+            getByIndex(index++);
+            return gemNum;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException("not supported yet");
+
+        }
     }
 }
