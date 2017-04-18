@@ -97,32 +97,42 @@ public class BoardUI {
 
         GemInfo availableGems = game.gameBoard.getAvailableGem();
         for (int i=0;i<5;i++) {
-            gameArea.remove(gems[i]);
-            gameArea.validate();
-            gameArea.repaint();
-            gems[i] = new GemButton().plotGemButton(5 - i), availableGems.getByIndex(5-i), gemImages);
-            gems[i].setBounds(75*ratio/100, (775-125*i)*ratio/100, GEM_WIDTH, GEM_HEIGHT);
-            gameArea.add(gems[i]);
-            gameArea.validate();
-            gameArea.repaint();
+            gems[i].removeAll();
+            gems[i].setOpaque(false);
+            gems[i].setContentAreaFilled(false);
+            gems[i].setBorderPainted(false);
+            gems[i].setIcon(plotGemButton(getGemByIndex(5-i), availableGems.getByIndex(5-i), gemImages));
         }
 
         Card[][] currentCards = game.gameBoard.getCards();
         for (int i=0;i<NUM_CARD_RANK;i++){
             for (int j=0;j<NUM_CARD_PER_RANK;j++){
-                gameArea.remove(this.cards[i][j]);
-                gameArea.validate();
-                gameArea.repaint();
-                this.cards[i][j] = new CardButton(currentCards[i][j],gemImages,cardImages);
-                this.cards[i][j].setBounds(ratio * 2+(250+150*j)*ratio/100, (200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
-                gameArea.add(this.cards[i][j]);
-                gameArea.validate();
-                gameArea.repaint();
+                cards[i][j].removeAll();
+                cards[i][j].setOpaque(false);
+                cards[i][j].setContentAreaFilled(false);
+                cards[i][j].setBorderPainted(false);
+                cards[i][j].setIcon(plotCardButton(currentCards[i][j],gemImages,cardImages));
             }
         }
 
+        int availableGold = game.gameBoard.getAvailableGolds();
+        gold.removeAll();
+        gold.setOpaque(false);
+        gold.setContentAreaFilled(false);
+        gold.setBorderPainted(false);
+        gold.setIcon(plotGoldButton(availableGold,gemImages));
 
-
+        Player[] gamePlayers = game.getPlayers();
+        for (int i=0;i<NUM_PLAYER;i++) {
+            if (game.getCurrentPlayer().getId() == gamePlayers[i].getId()) {
+                this.players[i].setStatus(gamePlayers[i].getId(), gamePlayers[i].getScore(), true);
+            } else {
+                this.players[i].setStatus(gamePlayers[i].getId(), gamePlayers[i].getScore(), false);
+            }
+            this.players[i].setGems(gamePlayers[i].getGems(), gamePlayers[i].getGolds());
+            this.players[i].setCards(gamePlayers[i].getCards());
+            this.players[i].setReservedCards(gamePlayers[i].getReserves());
+        }
         return;
     }
     /**
@@ -261,7 +271,6 @@ public class BoardUI {
         }
 
         gold = new JButton("gold");
-        //gold = new GoldButton(5,gemImages);
         gold.setBounds(75*ratio/100,200*ratio/100-50, GEM_WIDTH, GEM_HEIGHT);
         gameArea.add(gold);
 
@@ -275,8 +284,7 @@ public class BoardUI {
         decks = new JPanel[NUM_CARD_RANK];
         ArrayList<String> selColors = new ArrayList(Arrays.asList("green","red","blue"));
         for(int i = 0 ; i< NUM_CARD_RANK; i++){
-            //decks[i] = new JPanel();
-            //load image
+
             decks[i] = new DeckPanel(selColors.get(NUM_CARD_RANK-1-i));
             decks[i].setBounds(offset+ratio, (200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
             decks[i].setBackground(Color.orange);
@@ -333,11 +341,18 @@ public class BoardUI {
 
         private PlayerPanel() {
 
-            //need input of controller
             info = new JPanel();
             info.setLayout(new BoxLayout(info , BoxLayout.Y_AXIS));
+            status = new JPanel();
+            status.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
             setStatus(1,5,true);
+
+            gems = new JPanel();
+            gems.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
             setGems(new GemInfo(0),0);
+
+            cards = new JPanel();
+            cards.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
             setCards(new GemInfo(0));
 
             info.add(status);
@@ -357,7 +372,6 @@ public class BoardUI {
 
         private PlayerPanel(Player player,boolean current) {
 
-            //need input of controller
             setStatus(player.getId(),player.getScore(),current);
             setGems(new GemInfo(0),0);
             setCards(new GemInfo(0));
@@ -374,9 +388,9 @@ public class BoardUI {
             int width = ratio;
             int height = ratio*3/NUM_PLAYER;
 
-            status = new JPanel();
-            status.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
-
+            status.removeAll();
+            status.validate();
+            status.repaint();
             JLabel idLabel = new JLabel(Integer.toString(id),JLabel.CENTER);
             idLabel.setPreferredSize(new Dimension(width,height));
             status.add(idLabel);
@@ -398,12 +412,16 @@ public class BoardUI {
             indicatorLabel = new JLabel(icon, JLabel.CENTER);
             indicatorLabel.setPreferredSize(new Dimension(ratio,ratio*3/NUM_PLAYER));
             status.add(indicatorLabel);
+            status.validate();
+            status.repaint();
         }
 
 
         private void setGems(GemInfo gemInfo, int gold){
-            gems = new JPanel();
-            gems.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+
+            gems.removeAll();
+            gems.validate();
+            gems.repaint();
             for(int i = 1; i <= 5; i++){
                 int gem = gemInfo.getByIndex(i);
                 JLabel gemLabel = new JLabel(Integer.toString(gem),JLabel.CENTER);
@@ -413,20 +431,39 @@ public class BoardUI {
             JLabel goldLabel = new JLabel(Integer.toString(gold),JLabel.CENTER);
             goldLabel.setPreferredSize(new Dimension(ratio/2,ratio*3/NUM_PLAYER));
             gems.add(goldLabel);
-            gems.add(goldLabel);
+            gems.validate();
+            gems.repaint();
         }
 
 
         private void setCards(GemInfo gemInfo){
-            cards = new JPanel();
-            cards.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
+
+            cards.removeAll();
+            cards.validate();
+            cards.repaint();
             for(int i = 1; i <= 5; i++){
                 int bonus = gemInfo.getByIndex(i);
                 JLabel bonusLabel = new JLabel(Integer.toString(bonus),JLabel.CENTER);
                 bonusLabel.setPreferredSize(new Dimension(ratio*3/5,ratio*3/NUM_PLAYER));
                 cards.add(bonusLabel);
             }
+            cards.validate();
+            cards.repaint();
         }
+
+        private void setReservedCards(ArrayList <Card> reserved){
+            for (int i=0;i<3;i++) {
+                reservedCards[i].removeAll();
+            }
+            for (int i=0;i<reserved.size();i++)
+            {
+                reservedCards[i].setOpaque(false);
+                reservedCards[i].setContentAreaFilled(false);
+                reservedCards[i].setBorderPainted(false);
+                reservedCards[i].setIcon(plotCardButton(reserved.get(i),gemImages,cardImages));
+            }
+        }
+
 
         public JButton[] getReservedCards(){
             return this.reservedCards;
