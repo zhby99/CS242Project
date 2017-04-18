@@ -100,7 +100,7 @@ public class BoardUI {
             gameArea.remove(gems[i]);
             gameArea.validate();
             gameArea.repaint();
-            gems[i] = new GemButton(getGemByIndex(5 - i), availableGems.getByIndex(5-i), gemImages);
+            gems[i] = new GemButton().plotGemButton(5 - i), availableGems.getByIndex(5-i), gemImages);
             gems[i].setBounds(75*ratio/100, (775-125*i)*ratio/100, GEM_WIDTH, GEM_HEIGHT);
             gameArea.add(gems[i]);
             gameArea.validate();
