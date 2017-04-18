@@ -275,7 +275,7 @@ public class BoardUI {
         }
 
         gold = new JButton("gold");
-        gold.setBounds(ratio/3+75*ratio/100,200*ratio/100-50, GEM_WIDTH, GEM_HEIGHT);
+        gold.setBounds(ratio/3+75*ratio/100,150*ratio/100, GEM_WIDTH, GEM_HEIGHT);
         gameArea.add(gold);
 
         gems = new JButton[5];
