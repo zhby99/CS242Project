@@ -52,7 +52,7 @@ public class NoblePanel extends JPanel {
                 continue;
             int y = NOBLE_HEIGHT-x-idx*d;
             idx++;
-            plotRectWithOutline(g2d,colorMap.get(i-1),x,y,d,d);
+            plotRectWithOutline(g2d,COLOR_MAP.get(i-1),x,y,d,d);
             plotStringWithOutline(g2d,Integer.toString(cost),x+d/4,y+d*3/4,d*3/4);
         }
 

@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 
+import static Model.utils.GameUtils.NUM_PLAYER;
+
 /**
  * Created by dajun on 4/17/17.
  */
@@ -18,12 +20,6 @@ public class ViewUtils {
 
     public final static int ratio = 70;
 
-    public final static int WINDOW_WIDTH=20*ratio;
-    public final static int WINDOW_HEIGHT=10*ratio;
-    public final static int GAME_WIDTH=13*ratio;
-    public final static int GAME_HEIGHT=10*ratio;
-    public final static int PLAYER_WIDTH=7*ratio;
-    public final static int PLAYER_HEIGHT=10*ratio;
 
     public final static int CARD_WIDTH = ratio*3/2;
     public final static int CARD_HEIGHT = ratio*2;
@@ -33,13 +29,20 @@ public class ViewUtils {
     public final static int NOBLE_HEIGHT = ratio*5/4;
 
 
-    public final static Color customWhite = new Color(246,247,248);
-    public final static Color customBlack = new Color(66,51,52);
-    public final static Color customGreen = new Color(63,193,83);
-    public final static Color customRed = new Color(252,45,46);
-    public final static Color customBlue = new Color(40,150,221);
+    public final static int GAME_WIDTH=13*ratio;
+    public final static int GAME_HEIGHT=10*ratio;
+    public final static int PLAYER_WIDTH=3*ratio+3*CARD_WIDTH;
+    public final static int PLAYER_HEIGHT=10*ratio/NUM_PLAYER;
+    public final static int WINDOW_WIDTH=GAME_WIDTH+PLAYER_WIDTH;
+    public final static int WINDOW_HEIGHT=GAME_HEIGHT;
 
-    public final static ArrayList<Color> colorMap= new ArrayList<Color>(Arrays.asList(customWhite,customBlack,customGreen,customRed,customBlue));
+    public final static Color CUSTOM_WHITE = new Color(246,247,248);
+    public final static Color CUSTOM_BLACK = new Color(66,51,52);
+    public final static Color CUSTOM_GREEN = new Color(63,193,83);
+    public final static Color CUSTOM_RED = new Color(252,45,46);
+    public final static Color CUSTOM_BLUE = new Color(40,150,221);
+
+    public final static ArrayList<Color> COLOR_MAP= new ArrayList<Color>(Arrays.asList(CUSTOM_WHITE,CUSTOM_BLACK,CUSTOM_GREEN,CUSTOM_RED,CUSTOM_BLUE));
 
     //Set the top part of image to translucent
     public static void addOpaqueLayer(BufferedImage img){
@@ -75,10 +78,10 @@ public class ViewUtils {
         g2d.setColor(fillColor);
         g2d.fillOval(x,y,d,d);
         //if the color is white, use black as the border color
-        if(fillColor == customWhite)
-            g2d.setColor(customBlack);
+        if(fillColor == CUSTOM_WHITE)
+            g2d.setColor(CUSTOM_BLACK);
         else
-            g2d.setColor(customWhite);
+            g2d.setColor(CUSTOM_WHITE);
         g2d.drawOval(x,y,d,d);
 
     }
@@ -90,33 +93,41 @@ public class ViewUtils {
         g2d.fillRect(x,y,w,h);
 
         //if the color is white, use black as the border color
-        if(fillColor == customWhite)
-            g2d.setColor(customBlack);
+        if(fillColor == CUSTOM_WHITE)
+            g2d.setColor(CUSTOM_BLACK);
         else
-            g2d.setColor(customWhite);
+            g2d.setColor(CUSTOM_WHITE);
         g2d.drawRect(x,y,w,h);
 
     }
 
-    public static ImageIcon plotGemButton(Gem gem, int left, Hashtable<String, Image> gemImages){
+    public static ImageIcon plotGemButton(Gem gem, int left, Hashtable<String, Image> gemImages,int width){
 
-        BufferedImage buffered = new BufferedImage(GEM_WIDTH, GEM_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage buffered = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = buffered.createGraphics();
-        int x = 0;
-        int y = 0;
-        int r = GEM_WIDTH/2;
+        int r = width/2;
 
         //plot other gem
-        Image gemImg = gemImages.get(gem.getGemName());
+        Image gemImg = gemImages.get(gem.getGemName()).getScaledInstance(width,width,Image.SCALE_SMOOTH);
         g2d.drawImage(gemImg, 0, 0 , null);
-        plotStringWithOutline(g2d,Integer.toString(left),x+r/2,y+r*3/2,GEM_WIDTH/4);
-/*
-        this.setOpaque(false);
-        this.setContentAreaFilled(false);
-        this.setBorderPainted(false);
-        this.setIcon(new ImageIcon(buffered));
-*/
+        plotStringWithOutline(g2d,Integer.toString(left),r/2,r*3/2,r*3/4);
         return new ImageIcon(buffered);
+    }
+
+
+
+    public static ImageIcon plotGoldButton(int left, Hashtable<String, Image> gemImages,int width){
+
+        BufferedImage buffered = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = buffered.createGraphics();
+        int r = width/2;
+
+        Image gemImg = gemImages.get("Gold").getScaledInstance(width,width,Image.SCALE_SMOOTH);;
+        g2d.drawImage(gemImg, 0,0, null);
+        plotStringWithOutline(g2d,Integer.toString(left),r/2,r*3/2,r*3/4);
+
+        return new ImageIcon(buffered);
+
     }
 
 
@@ -158,31 +169,22 @@ public class ViewUtils {
                 continue;
             int y = CARD_HEIGHT-idx*CARD_HEIGHT/6;
             idx++;
-            plotCircleWithOutline(g2d,colorMap.get(i-1),x,y,2*r);
+            plotCircleWithOutline(g2d,COLOR_MAP.get(i-1),x,y,2*r);
             plotStringWithOutline(g2d,Integer.toString(cost),x+r/2,y+r*3/2,r*3/2);
         }
 
         return new ImageIcon(buffered);
     }
 
-    public static ImageIcon plotGoldButton(int left, Hashtable<String, Image> gemImages){
-
-        BufferedImage buffered = new BufferedImage(GEM_WIDTH, GEM_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = buffered.createGraphics();
-        int x = 0;
-        int y = 0;
-        int r = GEM_WIDTH/2;
-
-        Image gemImg = gemImages.get("Gold");
-        g2d.drawImage(gemImg, 0, 0 , null);
-        plotStringWithOutline(g2d,Integer.toString(left),x+r/2,y+r*3/2,GEM_WIDTH/4);
-
-        return new ImageIcon(buffered);
-        //this.setOpaque(false);
-        //this.setContentAreaFilled(false);
-        //this.setBorderPainted(false);
-        //this.setIcon(new ImageIcon(buffered));
-
+    public static Gem getGemByIndex(int id){
+        switch (id){
+            case 1: return Gem.DIAMOND;
+            case 2: return Gem.EMERALD;
+            case 3: return Gem.ONYX;
+            case 4: return Gem.RUBY;
+            case 5: return Gem.SAPPHIRE;
+            default: return null;
+        }
     }
 
 }
