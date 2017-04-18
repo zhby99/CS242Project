@@ -189,6 +189,14 @@ public class Player {
 			}
 		}
 
+
+
+		for(int i = 1; i <= 5; i++) {
+			if(this.board.availableGem.getByIndex(i) <= 0 && collectedGems.getByIndex(i) > 0)
+				return false;
+		}
+
+
 		combineGems(this.gems, collectedGems);
 		reduceGems(this.board.availableGem, collectedGems);
 		return true;
