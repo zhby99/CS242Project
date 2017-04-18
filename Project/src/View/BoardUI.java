@@ -88,24 +88,34 @@ public class BoardUI {
             }
             else {
                 this.nobles[i].removeAll();
+                this.nobles[i].validate();
+                this.nobles[i].repaint();
             }
         }
 
         GemInfo availableGems = game.gameBoard.getAvailableGem();
         for (int i=0;i<5;i++) {
             gameArea.remove(gems[i]);
+            gameArea.validate();
+            gameArea.repaint();
             gems[i] = new GemButton(getGemByIndex(5 - i), availableGems.getByIndex(5-i), gemImages);
             gems[i].setBounds(75*ratio/100, (775-125*i)*ratio/100, GEM_WIDTH, GEM_HEIGHT);
             gameArea.add(gems[i]);
+            gameArea.validate();
+            gameArea.repaint();
         }
 
         Card[][] currentCards = game.gameBoard.getCards();
         for (int i=0;i<NUM_CARD_RANK;i++){
             for (int j=0;j<NUM_CARD_PER_RANK;j++){
                 gameArea.remove(this.cards[i][j]);
+                gameArea.validate();
+                gameArea.repaint();
                 this.cards[i][j] = new CardButton(currentCards[i][j],gemImages,cardImages);
                 this.cards[i][j].setBounds(ratio * 2+(250+150*j)*ratio/100, (200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
                 gameArea.add(this.cards[i][j]);
+                gameArea.validate();
+                gameArea.repaint();
             }
         }
 
