@@ -27,8 +27,13 @@ public class NoblePanel extends JPanel {
         Graphics2D g2d = buffered.createGraphics();
 
         //plot background card
-        Image backImg = nobleImages.get("Male");
+        Image backImg = null;
+        if(Math.random() < 0.5)
+            backImg = nobleImages.get("Male");
+        else
+            backImg = nobleImages.get("Female");
         g2d.drawImage(backImg, 0, 0 , null);
+
 
         //Reduce the opacity to 50% of the card's left part
         BufferedImage subImage = buffered.getSubimage(0, 0, NOBLE_WIDTH*3/10, NOBLE_HEIGHT); // x, y, width, height

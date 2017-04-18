@@ -12,6 +12,8 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 
 import static Model.utils.GameUtils.*;
@@ -253,7 +255,7 @@ public class BoardUI {
         for (int i=0;i<NUM_PLAYER+1;i++){
             nobles[i] = new JPanel(new BorderLayout());
 
-            nobles[i].setBounds(offset+(NOBLE_WIDTH*2) * (i+1) *ratio/100, 50*ratio/100, NOBLE_WIDTH,NOBLE_HEIGHT);
+            nobles[i].setBounds(offset/2+(NOBLE_WIDTH*2) * (i+1) *ratio/100, 50*ratio/100, NOBLE_WIDTH,NOBLE_HEIGHT);
             nobles[i].setBackground(Color.black);
             gameArea.add(nobles[i]);
         }
@@ -271,9 +273,11 @@ public class BoardUI {
         }
 
         decks = new JPanel[NUM_CARD_RANK];
+        ArrayList<String> selColors = new ArrayList(Arrays.asList("green","red","blue"));
         for(int i = 0 ; i< NUM_CARD_RANK; i++){
-            decks[i] = new JPanel();
+            //decks[i] = new JPanel();
             //load image
+            decks[i] = new DeckPanel(selColors.get(i));
             decks[i].setBounds(offset+ratio, (200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
             decks[i].setBackground(Color.orange);
             gameArea.add(decks[i]);
