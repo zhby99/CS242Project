@@ -107,7 +107,7 @@ public class ViewUtils {
         Graphics2D g2d = buffered.createGraphics();
         int r = width/2;
 
-        //plot other gem
+        //plot gem and resize the image
         Image gemImg = gemImages.get(gem.getGemName()).getScaledInstance(width,width,Image.SCALE_SMOOTH);
         g2d.drawImage(gemImg, 0, 0 , null);
         plotStringWithOutline(g2d,Integer.toString(left),r/2,r*3/2,r*3/4);
@@ -122,6 +122,7 @@ public class ViewUtils {
         Graphics2D g2d = buffered.createGraphics();
         int r = width/2;
 
+        //plot gold and resize the image
         Image gemImg = gemImages.get("Gold").getScaledInstance(width,width,Image.SCALE_SMOOTH);;
         g2d.drawImage(gemImg, 0,0, null);
         plotStringWithOutline(g2d,Integer.toString(left),r/2,r*3/2,r*3/4);

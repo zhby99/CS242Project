@@ -190,8 +190,13 @@ public class PlayerPanel extends JPanel {
             reservedCards[i].setOpaque(false);
             reservedCards[i].setContentAreaFilled(false);
             reservedCards[i].setBorderPainted(false);
+            //if there is a reserved card, display the image
             if(i < reserved.size())
                 reservedCards[i].setIcon(plotCardButton(reserved.get(i),gemImages,cardImages));
+            else
+                reservedCards[i].setIcon(null);
+            reservedCards[i].validate();
+            reservedCards[i].repaint();
         }
     }
 

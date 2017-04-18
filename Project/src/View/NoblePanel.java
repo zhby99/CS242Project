@@ -16,6 +16,7 @@ import static View.utils.ViewUtils.*;
 public class NoblePanel extends JPanel {
 
     private Image nobleImage;
+    double rn = Math.random();
 
     public NoblePanel(Noble noble, Hashtable<String, Image> nobleImages) {
 
@@ -28,7 +29,7 @@ public class NoblePanel extends JPanel {
 
         //plot background card
         Image backImg = null;
-        if(Math.random() < 0.5)
+        if( rn < 0.5)
             backImg = nobleImages.get("Male");
         else
             backImg = nobleImages.get("Female");
