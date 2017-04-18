@@ -240,7 +240,24 @@ public class BoardUI {
         setGameBoard();
         window.add(gameArea,BorderLayout.WEST);
 
-        playerArea = new JPanel();
+
+        playerArea = new JPanel(){
+            //load background
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                File f = new File("src/View/img/PlayerBackground.jpg");
+                BufferedImage image = null;
+                try {
+                    image = ImageIO.read(f);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Image backgroundImage = image.getScaledInstance(PLAYER_WIDTH,WINDOW_HEIGHT,Image.SCALE_SMOOTH);
+                g.drawImage(backgroundImage,0,0,null);
+
+            }
+        };
         playerArea.setPreferredSize(new Dimension(PLAYER_WIDTH,PLAYER_HEIGHT));
         setPlayerArea();
         window.add(playerArea,BorderLayout.EAST);
@@ -287,21 +304,25 @@ public class BoardUI {
         }
 
         collect = new JButton("Collect");
+        collect.setBackground(new Color(202,145,66));
         collect.setFont(new Font("MONOSPACED", Font.PLAIN, ratio/6));
         collect.setBounds(ratio*43/4, 5*ratio, ratio*5/4, ratio/2);
         gameArea.add(collect);
 
         reset = new JButton("Reset");
+        reset.setBackground(new Color(202,145,66));
         reset.setFont(new Font("MONOSPACED", Font.PLAIN, ratio/5));
         reset.setBounds(ratio*43/4, 6*ratio, ratio*5/4, ratio/2);
         gameArea.add(reset);
 
         buy = new JButton("Buy");
+        buy.setBackground(new Color(202,145,66));
         buy.setFont(new Font("MONOSPACED", Font.PLAIN, ratio/5));
         buy.setBounds(ratio*43/4, 7*ratio, ratio*5/4, ratio/2);
         gameArea.add(buy);
 
         reserve = new JButton("Reserve");
+        reserve.setBackground(new Color(202,145,66));
         reserve.setFont(new Font("MONOSPACED", Font.PLAIN, ratio/6));
         reserve.setBounds(ratio*43/4, 8*ratio, ratio*5/4, ratio/2);
         gameArea.add(reserve);

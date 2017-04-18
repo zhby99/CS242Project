@@ -4,9 +4,12 @@ import Model.Card;
 import Model.Player;
 import Model.utils.GemInfo;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -32,21 +35,28 @@ public class PlayerPanel extends JPanel {
 
     public PlayerPanel(Hashtable<String, Image> cardImg, Hashtable<String, Image> gemImg) {
 
+
         cardImages = cardImg;
         gemImages = gemImg;
-        this.setBackground(backColor);
+        //this.setBackground(backColor);
+        this.setOpaque(false);
 
         info = new JPanel();
+        info.setOpaque(false);
         info.setLayout(new BoxLayout(info , BoxLayout.Y_AXIS));
+
         status = new JPanel();
+        status.setOpaque(false);
         status.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         setStatus(1,5,true);
 
         gems = new JPanel();
+        gems.setOpaque(false);
         gems.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         setGems(new GemInfo(0),0);
 
         cards = new JPanel();
+        cards.setOpaque(false);
         cards.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         setCards(new GemInfo(0));
 
@@ -65,24 +75,13 @@ public class PlayerPanel extends JPanel {
         }
     }
 
-    public PlayerPanel(Player player, boolean current) {
-
-        setStatus(player.getId(),player.getScore(),current);
-        setGems(new GemInfo(0),0);
-        setCards(new GemInfo(0));
-
-        this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-        this.add(status);
-        this.add(gems);
-        this.add(cards);
-    }
-
-
     public void setStatus(int id, int score, boolean indicator){
 
         int width = PLAYER_WIDTH/9;
         int height = PLAYER_HEIGHT/3;
         status.setBackground(backColor);
+        //status.setOpaque(false);
+
         status.removeAll();
         status.validate();
         status.repaint();
