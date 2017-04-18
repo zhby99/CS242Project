@@ -303,27 +303,28 @@ public class BoardUI {
             }
         }
 
+        String defaultFont = new JButton().getFont().toString();
         collect = new JButton("Collect");
         collect.setBackground(new Color(202,145,66));
-        collect.setFont(new Font("MONOSPACED", Font.PLAIN, ratio/6));
+        collect.setFont(new Font(defaultFont,0, ratio/5));
         collect.setBounds(ratio*43/4, 5*ratio, ratio*5/4, ratio/2);
         gameArea.add(collect);
 
         reset = new JButton("Reset");
         reset.setBackground(new Color(202,145,66));
-        reset.setFont(new Font("MONOSPACED", Font.PLAIN, ratio/5));
+        reset.setFont(new Font(defaultFont,0, ratio/5));
         reset.setBounds(ratio*43/4, 6*ratio, ratio*5/4, ratio/2);
         gameArea.add(reset);
 
         buy = new JButton("Buy");
         buy.setBackground(new Color(202,145,66));
-        buy.setFont(new Font("MONOSPACED", Font.PLAIN, ratio/5));
+        buy.setFont(new Font(defaultFont,0, ratio/5));
         buy.setBounds(ratio*43/4, 7*ratio, ratio*5/4, ratio/2);
         gameArea.add(buy);
 
         reserve = new JButton("Reserve");
         reserve.setBackground(new Color(202,145,66));
-        reserve.setFont(new Font("MONOSPACED", Font.PLAIN, ratio/6));
+        reserve.setFont(new Font(defaultFont,0, ratio/6));
         reserve.setBounds(ratio*43/4, 8*ratio, ratio*5/4, ratio/2);
         gameArea.add(reserve);
     }
