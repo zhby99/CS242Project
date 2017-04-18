@@ -44,11 +44,15 @@ public class Card {
     }
 
     public GemInfo getDevelopmentCost(){
-        return developmentCost;
+        GemInfo cost = new GemInfo(developmentCost.diamond,developmentCost.emerald,
+                developmentCost.onyx,developmentCost.ruby,developmentCost.sapphire);
+        return cost;
     }
 
     public int getCardScore(){
-        return cardScore;
+        int score;
+        score = cardScore;
+        return score;
     }
 }
 
