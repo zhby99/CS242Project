@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import static Model.utils.GameUtils.*;
 import static Model.utils.GemInfo.*;
+import static Model.utils.GemInfo.reduceGems;
 import static java.lang.Math.*;
 
 /**
@@ -105,6 +106,7 @@ public class Player {
 			reduceGems(this.gems, requiredGem);
 			this.golds -= (restGem.diamond + restGem.emerald + restGem.onyx + restGem.ruby + restGem.sapphire);
 			board.changeGold(restGem.diamond + restGem.emerald + restGem.onyx + restGem.ruby + restGem.sapphire);
+			reduceGems(requiredGem,restGem);
 			board.changeGem(requiredGem);
 			this.gems.setGems(max(this.gems.diamond, 0), max(this.gems.emerald, 0), max(this.gems.onyx, 0), max(this.gems.ruby, 0), max(this.gems.sapphire, 0));
 			if(isReserved) {
