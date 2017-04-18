@@ -277,7 +277,7 @@ public class BoardUI {
         for(int i = 0 ; i< NUM_CARD_RANK; i++){
             //decks[i] = new JPanel();
             //load image
-            decks[i] = new DeckPanel(selColors.get(i));
+            decks[i] = new DeckPanel(selColors.get(NUM_CARD_RANK-1-i));
             decks[i].setBounds(offset+ratio, (200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
             decks[i].setBackground(Color.orange);
             gameArea.add(decks[i]);
