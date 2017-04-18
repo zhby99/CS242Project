@@ -12,9 +12,9 @@ import static View.utils.ViewUtils.plotStringWithOutline;
 /**
  * Created by dajun on 4/17/17.
  */
-public class GoldButton extends JButton {
+public class GoldButton{
 
-    public GoldButton(int left, Hashtable<String, Image> gemImages){
+    public ImageIcon plotGoldButton(int left, Hashtable<String, Image> gemImages){
 
         BufferedImage buffered = new BufferedImage(GEM_WIDTH, GEM_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = buffered.createGraphics();
@@ -26,10 +26,11 @@ public class GoldButton extends JButton {
         g2d.drawImage(gemImg, 0, 0 , null);
         plotStringWithOutline(g2d,Integer.toString(left),x+r/2,y+r*3/2,GEM_WIDTH/4);
 
-        this.setOpaque(false);
-        this.setContentAreaFilled(false);
+        return new ImageIcon(buffered);
+        //this.setOpaque(false);
+        //this.setContentAreaFilled(false);
         //this.setBorderPainted(false);
-        this.setIcon(new ImageIcon(buffered));
+        //this.setIcon(new ImageIcon(buffered));
 
     }
 }

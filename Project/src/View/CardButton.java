@@ -16,9 +16,9 @@ package View;
  * Created by dajun on 4/17/17.
  */
 
-public class CardButton extends JButton{
+public class CardButton{
 
-    public CardButton(Card card, Hashtable<String, Image> gemImages, Hashtable<String, Image> cardImages) {
+    public ImageIcon plotCardButton(Card card, Hashtable<String, Image> gemImages, Hashtable<String, Image> cardImages) {
 
         //extract the card information
         Gem gem = card.getTargetGem();
@@ -60,11 +60,7 @@ public class CardButton extends JButton{
             plotStringWithOutline(g2d,Integer.toString(cost),x+r/2,y+r*3/2,r*3/2);
         }
 
-
-        this.setOpaque(false);
-        this.setContentAreaFilled(false);
-        //this.setBorderPainted(false);
-        this.setIcon(new ImageIcon(buffered));
+        return new ImageIcon(buffered);
     }
 
 }
