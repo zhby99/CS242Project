@@ -340,8 +340,9 @@ public class BoardUI {
         }
     }
 
-
+/*
     public static void main(String[] args) throws IOException {
         new BoardUI();
     }
+*/
 }

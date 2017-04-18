@@ -159,6 +159,12 @@ public class Player {
 		if(collectedGems.GemTotalNum() > MAX_COLLECT_GEMS)
 			return false;
 
+
+		//player cannot hold more than 10 gems at a time
+		if(collectedGems.GemTotalNum() + gems.GemTotalNum()+golds > MAX_HOLD_GEMS){
+			return false;
+		}
+
 		//you can select 3 distinct gems
 		if(collectedGems.GemTotalNum() == MAX_COLLECT_GEMS){
 			if(collectedGems.GemMaxTypeNum() >= MAX_SAME_TYPE_GEMS)
@@ -167,35 +173,19 @@ public class Player {
 
 		//or two same gems if there are more than 4 gems of that type on the board
 		if(collectedGems.GemTotalNum() == MAX_SAME_TYPE_GEMS){
-			if(collectedGems.diamond == MAX_SAME_TYPE_GEMS) {
-				if (this.board.availableGem.diamond < MIN_SAME_TYPE_GEMS_ON_BOARD)
-					return false;
-			}
-			else if(collectedGems.emerald == MAX_SAME_TYPE_GEMS) {
-				if (this.board.availableGem.emerald < MIN_SAME_TYPE_GEMS_ON_BOARD)
-					return false;
-			}
-			else if(collectedGems.onyx == MAX_SAME_TYPE_GEMS) {
-				if (this.board.availableGem.onyx < MIN_SAME_TYPE_GEMS_ON_BOARD)
-					return false;
-			}
-			else if(collectedGems.ruby == MAX_SAME_TYPE_GEMS) {
-				if (this.board.availableGem.ruby < MIN_SAME_TYPE_GEMS_ON_BOARD)
-					return false;
-			}
-			else{
-				if (this.board.availableGem.sapphire < MIN_SAME_TYPE_GEMS_ON_BOARD)
-					return false;
+			for(int i = 1; i <= 5; i++) {
+				if(collectedGems.getByIndex(i) == MAX_SAME_TYPE_GEMS) {
+					if (this.board.availableGem.getByIndex(i) < MIN_SAME_TYPE_GEMS_ON_BOARD)
+						return false;
+				}
 			}
 		}
 
-
-
+		//check if there are enough available gems on the board
 		for(int i = 1; i <= 5; i++) {
 			if(this.board.availableGem.getByIndex(i) <= 0 && collectedGems.getByIndex(i) > 0)
 				return false;
 		}
-
 
 		combineGems(this.gems, collectedGems);
 		reduceGems(this.board.availableGem, collectedGems);
