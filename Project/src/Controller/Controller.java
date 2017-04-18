@@ -50,7 +50,7 @@ public class Controller {
         boardUI.addNewGameListener(new ActionListener(){
             public void actionPerformed(ActionEvent event) {
                 game = new Game();
-                boardUI = new BoardUI();
+                boardUI.updateByGame(game);
                 currentGemInfo = new GemInfo(0);
                 selectedCard = null;
             }
