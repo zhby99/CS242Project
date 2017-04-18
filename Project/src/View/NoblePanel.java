@@ -16,7 +16,7 @@ import static View.utils.ViewUtils.*;
 public class NoblePanel extends JPanel {
 
     private Image nobleImage;
-    double rn = Math.random();
+    final private double rn = Math.random();
 
     public NoblePanel(Noble noble, Hashtable<String, Image> nobleImages) {
 

@@ -275,13 +275,13 @@ public class BoardUI {
         }
 
         gold = new JButton("gold");
-        gold.setBounds(75*ratio/100,200*ratio/100-50, GEM_WIDTH, GEM_HEIGHT);
+        gold.setBounds(ratio/3+75*ratio/100,200*ratio/100-50, GEM_WIDTH, GEM_HEIGHT);
         gameArea.add(gold);
 
         gems = new JButton[5];
         for (int i=0;i<5;i++) {
             gems[i] = new JButton("tmp");
-            gems[i].setBounds(75*ratio/100, (775-125*i)*ratio/100, GEM_WIDTH, GEM_HEIGHT);
+            gems[i].setBounds(ratio/3+75*ratio/100, (775-125*i)*ratio/100, GEM_WIDTH, GEM_HEIGHT);
             gameArea.add(gems[i]);
         }
 
@@ -289,7 +289,7 @@ public class BoardUI {
         ArrayList<String> selColors = new ArrayList(Arrays.asList("green","red","blue"));
         for(int i = 0 ; i< NUM_CARD_RANK; i++){
             decks[i] = new DeckPanel(selColors.get(NUM_CARD_RANK-1-i));
-            decks[i].setBounds(offset+ratio, (200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
+            decks[i].setBounds(offset+ratio, ratio/3+(200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
             gameArea.add(decks[i]);
         }
 
@@ -298,7 +298,7 @@ public class BoardUI {
         for (int i=0;i<NUM_CARD_RANK;i++){
             for (int j=0;j<NUM_CARD_PER_RANK;j++) {
                 cards[i][j] = new JButton();
-                cards[i][j].setBounds(offset+(250+150*j)*ratio/100, (200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
+                cards[i][j].setBounds(offset+(250+150*j)*ratio/100, ratio/3+(200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
                 gameArea.add(cards[i][j]);
             }
         }
