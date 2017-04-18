@@ -42,7 +42,7 @@ public class ViewUtils {
     public final static Color CUSTOM_RED = new Color(252,45,46);
     public final static Color CUSTOM_BLUE = new Color(40,150,221);
 
-    public final static ArrayList<Color> COLOR_MAP= new ArrayList<Color>(Arrays.asList(CUSTOM_WHITE,CUSTOM_BLACK,CUSTOM_GREEN,CUSTOM_RED,CUSTOM_BLUE));
+    public final static ArrayList<Color> COLOR_MAP= new ArrayList<Color>(Arrays.asList(CUSTOM_WHITE,CUSTOM_GREEN,CUSTOM_BLACK,CUSTOM_RED,CUSTOM_BLUE));
 
     //Set the top part of image to translucent
     public static void addOpaqueLayer(BufferedImage img){
