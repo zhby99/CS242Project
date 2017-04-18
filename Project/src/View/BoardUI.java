@@ -287,19 +287,23 @@ public class BoardUI {
         }
 
         collect = new JButton("Collect");
-        collect.setBounds(11*ratio, 2*ratio, ratio, ratio);
+        collect.setFont(new Font("MONOSPACED", Font.PLAIN, ratio/6));
+        collect.setBounds(ratio*43/4, 5*ratio, ratio*5/4, ratio/2);
         gameArea.add(collect);
 
         reset = new JButton("Reset");
-        reset.setBounds(11*ratio, 3*ratio, ratio, ratio);
+        reset.setFont(new Font("MONOSPACED", Font.PLAIN, ratio/5));
+        reset.setBounds(ratio*43/4, 6*ratio, ratio*5/4, ratio/2);
         gameArea.add(reset);
 
         buy = new JButton("Buy");
-        buy.setBounds(11*ratio, 4*ratio, ratio, ratio);
+        buy.setFont(new Font("MONOSPACED", Font.PLAIN, ratio/5));
+        buy.setBounds(ratio*43/4, 7*ratio, ratio*5/4, ratio/2);
         gameArea.add(buy);
 
         reserve = new JButton("Reserve");
-        reserve.setBounds(11*ratio, 5*ratio, ratio, ratio);
+        reserve.setFont(new Font("MONOSPACED", Font.PLAIN, ratio/6));
+        reserve.setBounds(ratio*43/4, 8*ratio, ratio*5/4, ratio/2);
         gameArea.add(reserve);
     }
 
