@@ -45,7 +45,6 @@ public class BoardUI {
     private Hashtable<String, Image> cardImages = new Hashtable<String, Image>();
     private Hashtable<String, Image> gemImages = new Hashtable<String, Image>();
     private Hashtable<String, Image> nobleImages = new Hashtable<String, Image>();
-    Image backgroundImage;
 
     public BoardUI() {
 
@@ -97,32 +96,42 @@ public class BoardUI {
 
         GemInfo availableGems = game.gameBoard.getAvailableGem();
         for (int i=0;i<5;i++) {
-            gameArea.remove(gems[i]);
-            gameArea.validate();
-            gameArea.repaint();
-            gems[i] = new GemButton().plotGemButton(5 - i), availableGems.getByIndex(5-i), gemImages);
-            gems[i].setBounds(75*ratio/100, (775-125*i)*ratio/100, GEM_WIDTH, GEM_HEIGHT);
-            gameArea.add(gems[i]);
-            gameArea.validate();
-            gameArea.repaint();
+            gems[i].removeAll();
+            gems[i].setOpaque(false);
+            gems[i].setContentAreaFilled(false);
+            gems[i].setBorderPainted(false);
+            gems[i].setIcon(plotGemButton(getGemByIndex(5-i), availableGems.getByIndex(5-i), gemImages,GEM_WIDTH));
         }
 
         Card[][] currentCards = game.gameBoard.getCards();
         for (int i=0;i<NUM_CARD_RANK;i++){
             for (int j=0;j<NUM_CARD_PER_RANK;j++){
-                gameArea.remove(this.cards[i][j]);
-                gameArea.validate();
-                gameArea.repaint();
-                this.cards[i][j] = new CardButton(currentCards[i][j],gemImages,cardImages);
-                this.cards[i][j].setBounds(ratio * 2+(250+150*j)*ratio/100, (200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
-                gameArea.add(this.cards[i][j]);
-                gameArea.validate();
-                gameArea.repaint();
+                cards[i][j].removeAll();
+                cards[i][j].setOpaque(false);
+                cards[i][j].setContentAreaFilled(false);
+                cards[i][j].setBorderPainted(false);
+                cards[i][j].setIcon(plotCardButton(currentCards[i][j],gemImages,cardImages));
             }
         }
 
+        int availableGold = game.gameBoard.getAvailableGolds();
+        gold.removeAll();
+        gold.setOpaque(false);
+        gold.setContentAreaFilled(false);
+        gold.setBorderPainted(false);
+        gold.setIcon(plotGoldButton(availableGold,gemImages,GEM_WIDTH));
 
-
+        Player[] gamePlayers = game.getPlayers();
+        for (int i=0;i<NUM_PLAYER;i++) {
+            if (game.getCurrentPlayer().getId() == gamePlayers[i].getId()) {
+                this.players[i].setStatus(gamePlayers[i].getId(), gamePlayers[i].getScore(), true);
+            } else {
+                this.players[i].setStatus(gamePlayers[i].getId(), gamePlayers[i].getScore(), false);
+            }
+            this.players[i].setGems(gamePlayers[i].getGems(), gamePlayers[i].getGolds());
+            this.players[i].setCards(gamePlayers[i].getCards());
+            this.players[i].setReservedCards(gamePlayers[i].getReserves(),gemImages,cardImages);
+        }
         return;
     }
     /**
@@ -231,21 +240,27 @@ public class BoardUI {
         setGameBoard();
         window.add(gameArea,BorderLayout.WEST);
 
-        playerArea = new JPanel();
+
+        playerArea = new JPanel(){
+            //load background
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                File f = new File("src/View/img/PlayerBackground.jpg");
+                BufferedImage image = null;
+                try {
+                    image = ImageIO.read(f);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Image backgroundImage = image.getScaledInstance(PLAYER_WIDTH,WINDOW_HEIGHT,Image.SCALE_SMOOTH);
+                g.drawImage(backgroundImage,0,0,null);
+
+            }
+        };
         playerArea.setPreferredSize(new Dimension(PLAYER_WIDTH,PLAYER_HEIGHT));
         setPlayerArea();
         window.add(playerArea,BorderLayout.EAST);
-    }
-
-    public Gem getGemByIndex(int id){
-        switch (id){
-            case 1: return Gem.DIAMOND;
-            case 2: return Gem.EMERALD;
-            case 3: return Gem.ONYX;
-            case 4: return Gem.RUBY;
-            case 5: return Gem.SAPPHIRE;
-            default: return null;
-        }
     }
 
     private void setGameBoard() {
@@ -256,30 +271,25 @@ public class BoardUI {
             nobles[i] = new JPanel(new BorderLayout());
 
             nobles[i].setBounds(offset/2+(NOBLE_WIDTH*2) * (i+1) *ratio/100, 50*ratio/100, NOBLE_WIDTH,NOBLE_HEIGHT);
-            nobles[i].setBackground(Color.black);
             gameArea.add(nobles[i]);
         }
 
         gold = new JButton("gold");
-        //gold = new GoldButton(5,gemImages);
-        gold.setBounds(75*ratio/100,200*ratio/100-50, GEM_WIDTH, GEM_HEIGHT);
+        gold.setBounds(ratio/3+75*ratio/100,150*ratio/100, GEM_WIDTH, GEM_HEIGHT);
         gameArea.add(gold);
 
         gems = new JButton[5];
         for (int i=0;i<5;i++) {
             gems[i] = new JButton("tmp");
-            gems[i].setBounds(75*ratio/100, (775-125*i)*ratio/100, GEM_WIDTH, GEM_HEIGHT);
+            gems[i].setBounds(ratio/3+75*ratio/100, (775-125*i)*ratio/100, GEM_WIDTH, GEM_HEIGHT);
             gameArea.add(gems[i]);
         }
 
         decks = new JPanel[NUM_CARD_RANK];
         ArrayList<String> selColors = new ArrayList(Arrays.asList("green","red","blue"));
         for(int i = 0 ; i< NUM_CARD_RANK; i++){
-            //decks[i] = new JPanel();
-            //load image
             decks[i] = new DeckPanel(selColors.get(NUM_CARD_RANK-1-i));
-            decks[i].setBounds(offset+ratio, (200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
-            decks[i].setBackground(Color.orange);
+            decks[i].setBounds(offset+ratio, ratio/3+(200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
             gameArea.add(decks[i]);
         }
 
@@ -288,25 +298,34 @@ public class BoardUI {
         for (int i=0;i<NUM_CARD_RANK;i++){
             for (int j=0;j<NUM_CARD_PER_RANK;j++) {
                 cards[i][j] = new JButton();
-                cards[i][j].setBounds(offset+(250+150*j)*ratio/100, (200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
+                cards[i][j].setBounds(offset+(250+150*j)*ratio/100, ratio/3+(200+225*i)*ratio/100, CARD_WIDTH,CARD_HEIGHT);
                 gameArea.add(cards[i][j]);
             }
         }
 
+        String defaultFont = new JButton().getFont().toString();
         collect = new JButton("Collect");
-        collect.setBounds(11*ratio, 2*ratio, ratio, ratio);
+        collect.setBackground(new Color(202,145,66));
+        collect.setFont(new Font(defaultFont,0, ratio/5));
+        collect.setBounds(ratio*43/4, 5*ratio, ratio*5/4, ratio/2);
         gameArea.add(collect);
 
         reset = new JButton("Reset");
-        reset.setBounds(11*ratio, 3*ratio, ratio, ratio);
+        reset.setBackground(new Color(202,145,66));
+        reset.setFont(new Font(defaultFont,0, ratio/5));
+        reset.setBounds(ratio*43/4, 6*ratio, ratio*5/4, ratio/2);
         gameArea.add(reset);
 
         buy = new JButton("Buy");
-        buy.setBounds(11*ratio, 4*ratio, ratio, ratio);
+        buy.setBackground(new Color(202,145,66));
+        buy.setFont(new Font(defaultFont,0, ratio/5));
+        buy.setBounds(ratio*43/4, 7*ratio, ratio*5/4, ratio/2);
         gameArea.add(buy);
 
         reserve = new JButton("Reserve");
-        reserve.setBounds(11*ratio, 5*ratio, ratio, ratio);
+        reserve.setBackground(new Color(202,145,66));
+        reserve.setFont(new Font(defaultFont,0, ratio/6));
+        reserve.setBounds(ratio*43/4, 8*ratio, ratio*5/4, ratio/2);
         gameArea.add(reserve);
     }
 
@@ -315,125 +334,11 @@ public class BoardUI {
         playerArea.setLayout(new BoxLayout(playerArea,BoxLayout.Y_AXIS));
         players = new PlayerPanel[NUM_PLAYER];
         for (int i=0;i<NUM_PLAYER;i++){
-            players[i] = new PlayerPanel();
-            players[i].setPreferredSize(new Dimension(7*ratio,9*ratio/NUM_PLAYER));
-
+            players[i] = new PlayerPanel(cardImages,gemImages);
+            players[i].setPreferredSize(new Dimension(PLAYER_WIDTH,PLAYER_HEIGHT));
             playerArea.add(players[i]);
         }
     }
-
-    public class PlayerPanel extends JPanel{
-
-        //need the input of controller
-        JPanel info;
-        JButton reservedCards[];
-        JPanel status;
-        JPanel gems;
-        JPanel cards;
-
-        private PlayerPanel() {
-
-            //need input of controller
-            info = new JPanel();
-            info.setLayout(new BoxLayout(info , BoxLayout.Y_AXIS));
-            setStatus(1,5,true);
-            setGems(new GemInfo(0),0);
-            setCards(new GemInfo(0));
-
-            info.add(status);
-            info.add(gems);
-            info.add(cards);
-
-            this.setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
-            this.add(info);
-
-            reservedCards = new JButton[3];
-            for (int i=0;i<3;i++){
-                reservedCards[i] = new JButton();
-                reservedCards[i].setPreferredSize(new Dimension(75, 100));
-                this.add(reservedCards[i]);
-            }
-        }
-
-        private PlayerPanel(Player player,boolean current) {
-
-            //need input of controller
-            setStatus(player.getId(),player.getScore(),current);
-            setGems(new GemInfo(0),0);
-            setCards(new GemInfo(0));
-
-            this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-            this.add(status);
-            this.add(gems);
-            this.add(cards);
-        }
-
-
-        private void setStatus(int id, int score, boolean indicator){
-
-            int width = ratio;
-            int height = ratio*3/NUM_PLAYER;
-
-            status = new JPanel();
-            status.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
-
-            JLabel idLabel = new JLabel(Integer.toString(id),JLabel.CENTER);
-            idLabel.setPreferredSize(new Dimension(width,height));
-            status.add(idLabel);
-
-            JLabel scoreLabel = new JLabel(Integer.toString(score),JLabel.CENTER);
-            scoreLabel.setPreferredSize(new Dimension(width,height));
-            status.add(scoreLabel);
-
-            JLabel indicatorLabel;
-            BufferedImage buffered = new BufferedImage(width,height, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = buffered.createGraphics();
-            if(indicator) {
-                g2d.setColor(Color.GREEN);
-            }
-            else
-                g2d.setColor(Color.RED);
-            g2d.fillOval(width*3/8,height*3/8,width/4,width/4);
-            ImageIcon icon= new ImageIcon(buffered);
-            indicatorLabel = new JLabel(icon, JLabel.CENTER);
-            indicatorLabel.setPreferredSize(new Dimension(ratio,ratio*3/NUM_PLAYER));
-            status.add(indicatorLabel);
-        }
-
-
-        private void setGems(GemInfo gemInfo, int gold){
-            gems = new JPanel();
-            gems.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
-            for(int i = 1; i <= 5; i++){
-                int gem = gemInfo.getByIndex(i);
-                JLabel gemLabel = new JLabel(Integer.toString(gem),JLabel.CENTER);
-                gemLabel.setPreferredSize(new Dimension(ratio/2,ratio*3/NUM_PLAYER));
-                gems.add(gemLabel);
-            }
-            JLabel goldLabel = new JLabel(Integer.toString(gold),JLabel.CENTER);
-            goldLabel.setPreferredSize(new Dimension(ratio/2,ratio*3/NUM_PLAYER));
-            gems.add(goldLabel);
-            gems.add(goldLabel);
-        }
-
-
-        private void setCards(GemInfo gemInfo){
-            cards = new JPanel();
-            cards.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
-            for(int i = 1; i <= 5; i++){
-                int bonus = gemInfo.getByIndex(i);
-                JLabel bonusLabel = new JLabel(Integer.toString(bonus),JLabel.CENTER);
-                bonusLabel.setPreferredSize(new Dimension(ratio*3/5,ratio*3/NUM_PLAYER));
-                cards.add(bonusLabel);
-            }
-        }
-
-        public JButton[] getReservedCards(){
-            return this.reservedCards;
-        }
-
-    }
-
 
 
     public static void main(String[] args) throws IOException {
