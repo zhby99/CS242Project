@@ -29,10 +29,10 @@ public class NoblePanel extends JPanel {
 
         //plot background card
         Image backImg = null;
-        if( rn < 0.5)
+/*        if( rn < 0.5)
             backImg = nobleImages.get("Male");
         else
-            backImg = nobleImages.get("Female");
+*/            backImg = nobleImages.get("Female");
         g2d.drawImage(backImg, 0, 0 , null);
 
 
