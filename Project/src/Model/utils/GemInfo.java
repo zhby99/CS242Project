@@ -1,7 +1,6 @@
 package Model.utils;
 
 import java.util.Iterator;
-import java.util.function.Consumer;
 
 import static java.lang.Math.*;
 /**

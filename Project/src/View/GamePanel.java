@@ -21,18 +21,9 @@ public class GamePanel extends JPanel {
     public GamePanel() throws IOException {
 
         //initialize helper function
-
         f = new File("src/View/img/BoardBackground.jpg");
         image = ImageIO.read(f);
         backgroundImage = image.getScaledInstance(GAME_WIDTH,GAME_HEIGHT,Image.SCALE_SMOOTH);
-/*
-        BufferedImage backgroundImage = new BufferedImage(GAME_WIDTH,GAME_HEIGHT, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = backgroundImage.createGraphics();
-        g2d.drawImage(image.getScaledInstance(GAME_WIDTH,GAME_HEIGHT,Image.SCALE_SMOOTH), 0, 0 , null);
-
-        //Reduce the opacity to 50% of the card's top part
-        utils.addOpaqueLayer(backgroundImage);
-*/
     }
 
 

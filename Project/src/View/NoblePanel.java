@@ -16,6 +16,7 @@ import static View.utils.ViewUtils.*;
 public class NoblePanel extends JPanel {
 
     private Image nobleImage;
+    final private double rn = Math.random();
 
     public NoblePanel(Noble noble, Hashtable<String, Image> nobleImages) {
 
@@ -28,7 +29,7 @@ public class NoblePanel extends JPanel {
 
         //plot background card
         Image backImg = null;
-        if(Math.random() < 0.5)
+        if( rn < 0.5)
             backImg = nobleImages.get("Male");
         else
             backImg = nobleImages.get("Female");
@@ -52,7 +53,7 @@ public class NoblePanel extends JPanel {
                 continue;
             int y = NOBLE_HEIGHT-x-idx*d;
             idx++;
-            plotRectWithOutline(g2d,colorMap.get(i-1),x,y,d,d);
+            plotRectWithOutline(g2d,COLOR_MAP.get(i-1),x,y,d,d);
             plotStringWithOutline(g2d,Integer.toString(cost),x+d/4,y+d*3/4,d*3/4);
         }
 
