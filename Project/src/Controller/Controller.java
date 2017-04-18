@@ -49,12 +49,16 @@ public class Controller {
     private void addNewGameListener() {
         boardUI.addNewGameListener(new ActionListener(){
             public void actionPerformed(ActionEvent event) {
-                game = new Game();
-                boardUI.updateByGame(game);
-                currentGemInfo = new GemInfo(0);
-                selectedCard = null;
+                newGame();
             }
         });
+    }
+
+    private void newGame() {
+        game = new Game();
+        boardUI.updateByGame(game);
+        currentGemInfo = new GemInfo(0);
+        selectedCard = null;
     }
 
     /**
@@ -179,6 +183,7 @@ public class Controller {
                 }
                 else{
                     currentGemInfo.reset();
+                    if (checkEnd()) return;
                     game.turnToNextPlayer();
                     boardUI.updateByGame(game);
                 }
@@ -210,33 +215,40 @@ public class Controller {
                     game.getGameBoard().setCardOnBoard(newCard, selectedCard.getPosition());
                     selectedCard = null;
                     game.getCurrentPlayer().recruitAvailableNobles();
-                    if(game.getCurrentPlayer().getId() == NUM_PLAYER){
-                        int numberOfWining = game.checkEndofGame();
-                        if(numberOfWining == 1){
-                            for(Player player : game.getPlayers()){
-                                if(player.hasWon()){
-                                    int replyNewGame = JOptionPane.showConfirmDialog(null,
-                                            "Player " +player.getId()+" win! Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
-                                    if(replyNewGame==JOptionPane.YES_OPTION) {
-                                        //Todo: new game
-                                    }
-                                }
-                            }
-                        }
-                        else if(numberOfWining >1){
-                            int replyNewGame = JOptionPane.showConfirmDialog(null,
-                                    "Tie! Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
-                            if(replyNewGame==JOptionPane.YES_OPTION) {
-                                //Todo: new game
-                            }
-                        }
-                    }
+                    if (checkEnd()) return;
                     game.turnToNextPlayer();
                     boardUI.updateByGame(game);
                 }
 
             }
         });
+    }
+
+    private boolean checkEnd() {
+        if(game.getCurrentPlayer().getId() == NUM_PLAYER){
+            int numberOfWining = game.checkEndofGame();
+            if(numberOfWining == 1){
+                for(Player player : game.getPlayers()){
+                    if(player.hasWon()){
+                        int replyNewGame = JOptionPane.showConfirmDialog(null,
+                                "Player " +player.getId()+" win! Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
+                        if(replyNewGame==JOptionPane.YES_OPTION) {
+                            newGame();
+                            return true;
+                        }
+                    }
+                }
+            }
+            else if(numberOfWining >1){
+                int replyNewGame = JOptionPane.showConfirmDialog(null,
+                        "Tie! Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
+                if(replyNewGame==JOptionPane.YES_OPTION) {
+                    newGame();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -261,6 +273,7 @@ public class Controller {
                     Card newCard = game.getGameBoard().getNewCard(selectedCard.getPosition()[0]);
                     game.getGameBoard().setCardOnBoard(newCard, selectedCard.getPosition());
                     selectedCard = null;
+                    if (checkEnd()) return;
                     game.turnToNextPlayer();
                     boardUI.updateByGame(game);
                 }
