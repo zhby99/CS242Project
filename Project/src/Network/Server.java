@@ -23,7 +23,7 @@ public class Server {
 
         try {
             while (true){
-                Game game = new Game(listener.accept());
+                Game game = new Game(listener);
             }
         } finally {
             listener.close();

@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 import static Model.utils.GameUtils.*;
 import static Model.utils.GemInfo.*;
@@ -98,8 +100,34 @@ public class Player extends Thread{
 	 * The run method of this thread.
 	 */
 	public void run() {
-		output.println("MESSAGE All players connected");
-	}
+        try {
+            // The thread is only started after everyone connects.
+            output.println("MESSAGE All players connected");
+
+
+
+            // Repeatedly get commands from the client and process them.
+            while (true) {
+                String command = input.readLine();
+                if (command.startsWith("COLLECT")) {
+                    String gemInfo = command.substring(8);
+                    Scanner scanner = new Scanner(gemInfo);
+                    List<Integer> list = new ArrayList<>();
+                    while (scanner.hasNextInt()) {
+                        list.add(scanner.nextInt());
+                    }
+                    collectGems(new GemInfo(list.get(0),list.get(1),list.get(2),list.get(3),list.get(4)));
+                } else if (command.startsWith("QUIT")) {
+                    return;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Player died: " + e);
+        } finally {
+            try {socket.close();} catch (IOException e) {}
+        }
+    }
+
 
 	/**
 	 * add a new card to the player's own cards

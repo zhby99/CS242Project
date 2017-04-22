@@ -3,6 +3,8 @@ package Game;
 import Model.Board;
 import Model.Player;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 import static Model.utils.GameUtils.*;
@@ -28,14 +30,17 @@ public class Game {
         currentPlayer = players[0];
     }
 
-    public Game(Socket socket){
+    public Game(ServerSocket listener) throws IOException {
         this.gameBoard = new Board(NUM_PLAYER);
         this.gameBoard.initialBoard();
         this.players = new Player[NUM_PLAYER];
         for(int i = 0; i < NUM_PLAYER; i++){
-            players[i] = new Player(socket, i+1 , this.gameBoard);
+            players[i] = new Player(listener.accept(), i+1 , this.gameBoard);
         }
         currentPlayer = players[0];
+        for(int i = 0; i < NUM_PLAYER; i++){
+            players[i].start();
+        }
     }
 
     public Board getGameBoard(){
