@@ -36,6 +36,9 @@ public class Player {
 	public GemInfo getGems() {
 		return gems;
 	}
+	public void setCards(int number){
+	    cards.setGems(number,number,number,number,number);
+    }
 	public int getGolds() {
 		return golds;
 	}
@@ -192,9 +195,13 @@ public class Player {
 		return true;
 	}
 
+
+    /**
+     * This method is used to recruit all available nobles for a player, and add the scores of the nobles.
+     */
     public void recruitAvailableNobles(){
 	    for(Noble noble : this.board.getNobles()){
-            if(noble.satisfied(this.cards) && noble.getIsRecruited() == false){
+            if(noble.satisfied(this.cards) && !noble.getIsRecruited()){
                 noble.beRecruited();
                 this.score += noble.getScore();
             }
@@ -208,7 +215,7 @@ public class Player {
 	 * @return true if the player won
 	 */
 	public final boolean hasWon(){
-		return this.score >= WINNING_SCORE;
+		return this.score >= 15;
 	}
 
 }

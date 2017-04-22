@@ -82,4 +82,14 @@ public class PlayerTests {
         assertEquals(player.collectGems(selectedGems),true);
         assertEquals(player.getGolds(),0);
     }
+
+    @Test
+    public void recruitNoblesTests() throws Exception{
+        Game game = new Game();
+        game.getCurrentPlayer().recruitAvailableNobles();
+        assertEquals(game.getCurrentPlayer().getScore(), 0);
+        game.getCurrentPlayer().setCards(4);
+        game.getCurrentPlayer().recruitAvailableNobles();
+        assertEquals(game.getCurrentPlayer().getScore(), 15);
+    }
 }
