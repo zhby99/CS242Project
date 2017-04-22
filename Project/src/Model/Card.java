@@ -44,9 +44,8 @@ public class Card {
     }
 
     public GemInfo getDevelopmentCost(){
-        GemInfo cost = new GemInfo(developmentCost.diamond,developmentCost.emerald,
+        return new GemInfo(developmentCost.diamond,developmentCost.emerald,
                 developmentCost.onyx,developmentCost.ruby,developmentCost.sapphire);
-        return cost;
     }
 
     public int getCardScore(){

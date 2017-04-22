@@ -225,7 +225,7 @@ public class Player {
 	 * @return true if the player won
 	 */
 	public final boolean hasWon(){
-		return this.score >= WINNING_SCORE;
+		return this.score >= 15;
 	}
 
 }
