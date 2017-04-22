@@ -9,12 +9,9 @@ import View.BoardUI;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import static Model.utils.GameUtils.*;
-import static View.BoardUI.*;
 
 /**
  * Created by boyinzhang on 4/17/17.
@@ -225,13 +222,13 @@ public class Controller {
     }
 
     private boolean checkEnd() {
-        if(game.getCurrentPlayer().getId() == NUM_PLAYER){
+        if(game.getCurrentPlayer().getPlayerId() == NUM_PLAYER){
             int numberOfWining = game.checkEndofGame();
             if(numberOfWining == 1){
                 for(Player player : game.getPlayers()){
                     if(player.hasWon()){
                         int replyNewGame = JOptionPane.showConfirmDialog(null,
-                                "Player " +player.getId()+" win! Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
+                                "Player " +player.getPlayerId()+" win! Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
                         if(replyNewGame==JOptionPane.YES_OPTION) {
                             newGame();
                             return true;

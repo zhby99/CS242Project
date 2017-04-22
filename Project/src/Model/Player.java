@@ -1,5 +1,11 @@
 package Model;
 import Model.utils.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 
 import static Model.utils.GameUtils.*;
@@ -10,7 +16,7 @@ import static java.lang.Math.*;
 /**
  * Created by wu on 4/8/17.
  */
-public class Player {
+public class Player extends Thread{
 	final private int id;
 	private int score;
 	private GemInfo gems;
@@ -19,6 +25,14 @@ public class Player {
 	int numCards;
 	ArrayList<Card> reserves;
 	private Board board;
+
+	/*
+	The following part for Networking
+	 */
+	private Socket socket;
+	private BufferedReader input;
+	private PrintWriter output;
+
 
 	public Player(int pid, Board newBoard){
 		id = pid;
@@ -29,9 +43,32 @@ public class Player {
 		numCards = 0;
 		reserves = new ArrayList<Card>();
 		board = newBoard;
+
 	}
 
-	public int getId(){return id;}
+	public Player(Socket socket, int pid, Board newBoard){
+		this.socket = socket;
+		id = pid;
+		score = 0;
+		gems = new GemInfo(0);
+		golds = 0;
+		cards = new GemInfo(0);
+		numCards = 0;
+		reserves = new ArrayList<Card>();
+		board = newBoard;
+
+		try {
+			input = new BufferedReader(
+					new InputStreamReader(socket.getInputStream()));
+			output = new PrintWriter(socket.getOutputStream(), true);
+			output.println("WELCOME " + "Player "+ id);
+			output.println("MESSAGE Waiting for opponent to connect");
+		} catch (IOException e) {
+			System.out.println("Player died: " + e);
+		}
+	}
+
+	public int getPlayerId(){return id;}
 	public int getScore() {return score;}
 	public GemInfo getGems() {
 		return gems;
@@ -56,6 +93,13 @@ public class Player {
 	public void updateScore(int newScore){ score = newScore;}
 
 
+
+	/**
+	 * The run method of this thread.
+	 */
+	public void run() {
+		output.println("MESSAGE All players connected");
+	}
 
 	/**
 	 * add a new card to the player's own cards
