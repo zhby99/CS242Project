@@ -33,7 +33,7 @@ public class PlayerTests {
         Board board = new Board(NUM_PLAYER);
         Player player = new Player(0,board);
 
-        assertEquals(player.getId(), 0);
+        assertEquals(player.getPlayerId(), 0);
         assertEquals(player.getScore(), 0);
         assertEquals(player.getGolds(),0);
         assertEquals(player.getNumCards(),0);

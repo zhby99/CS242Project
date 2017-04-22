@@ -20,7 +20,6 @@ import static Model.utils.GameUtils.*;
 import static View.utils.ViewUtils.*;
 import Game.Game;
 import Model.*;
-import Model.utils.GemInfo;
 
 /**
  * Created by Yu on 4/16/17.
@@ -123,10 +122,10 @@ public class BoardUI {
 
         Player[] gamePlayers = game.getPlayers();
         for (int i=0;i<NUM_PLAYER;i++) {
-            if (game.getCurrentPlayer().getId() == gamePlayers[i].getId()) {
-                this.players[i].setStatus(gamePlayers[i].getId(), gamePlayers[i].getScore(), true);
+            if (game.getCurrentPlayer().getPlayerId() == gamePlayers[i].getPlayerId()) {
+                this.players[i].setStatus(gamePlayers[i].getPlayerId(), gamePlayers[i].getScore(), true);
             } else {
-                this.players[i].setStatus(gamePlayers[i].getId(), gamePlayers[i].getScore(), false);
+                this.players[i].setStatus(gamePlayers[i].getPlayerId(), gamePlayers[i].getScore(), false);
             }
             this.players[i].setGems(gamePlayers[i].getGems(), gamePlayers[i].getGolds());
             this.players[i].setCards(gamePlayers[i].getCards());
