@@ -230,11 +230,12 @@ public class Controller{
                     selectedCard = null;
                     game.getCurrentPlayer().recruitAvailableNobles();
                     if (checkEnd()) {
+
+                        game.turnToNextPlayer();
                         requestServer("VICTORY");
                         return;
                     }
                     game.turnToNextPlayer();
-
                     requestServer("PURCHASE");
 
                     //boardUI.updateByGame(game);
@@ -245,6 +246,8 @@ public class Controller{
     }
 
     private boolean checkEnd() {
+
+        /*
         if(game.getCurrentPlayer().getPlayerId() == NUM_PLAYER){
             int numberOfWining = game.checkEndofGame();
             if(numberOfWining == 1){
@@ -268,6 +271,11 @@ public class Controller{
                 }
             }
         }
+        */
+        if(game.currentPlayer.hasWon())
+            return true;
+
+
         return false;
     }
 

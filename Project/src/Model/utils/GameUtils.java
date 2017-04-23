@@ -11,7 +11,7 @@ public class GameUtils {
     public final static int INIT_AMOUNT_GOLD = 5;
     public final static int NOBLE_SCORE = 3;
     public final static int MAX_RESERVED_CARDS = 3 ;
-    public final static int WINNING_SCORE = 15;
+    public final static int WINNING_SCORE = 1;
     public final static int MAX_HOLD_GEMS = 10;
     public final static int MAX_COLLECT_GEMS = 3;
     public final static int MAX_SAME_TYPE_GEMS = 2;

@@ -4,6 +4,7 @@ import Controller.Controller;
 import Game.*;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 
 import static Model.utils.GameUtils.*;
 
@@ -22,18 +23,23 @@ public class Server extends Thread  {
         listener = new ServerSocket(port);
         output = new ObjectOutputStream[NUM_PLAYER];
         input = new ObjectInputStream[NUM_PLAYER];
-    }
 
-    private void gameInit() throws IOException {
-        Game game = new Game();
         for(int i = 0; i <  NUM_PLAYER; i++){
             Socket server = listener.accept();
             System.out.printf("%d players connected\n",i+1);
 
             output[i] = new ObjectOutputStream(server.getOutputStream());
-            output[i].writeObject(game);
-
             input[i] = new ObjectInputStream(server.getInputStream());
+
+        }
+    }
+
+    private void gameInit() throws IOException {
+        Game game = new Game();
+
+        for(int i = 0; i <  NUM_PLAYER; i++) {
+            output[i].writeObject(i);
+            output[i].writeObject(game);
             try {
                 String str = (String)input[i].readObject();
                 System.out.println(str);
@@ -41,7 +47,6 @@ public class Server extends Thread  {
                 e.printStackTrace();
             }
         }
-
         System.out.println("Game Starts");
     }
 
@@ -54,12 +59,20 @@ public class Server extends Thread  {
         System.out.println("Game Ends");
     }
 
-    public void announceResult(int winner) throws IOException {
+    public void announceResult(ArrayList<Integer>  winners) throws IOException {
 
-        for(int i = 0; i <  NUM_PLAYER; i++){
+        for(int i = 0; i <  NUM_PLAYER; i++) {
 
-            if(i == winner)
-                output[i].writeObject("WIN");
+            if (winners.contains(i)){
+                if (winners.size() == 1)
+                    output[i].writeObject("WIN");
+                else {
+                    //reference
+                    //winners.remove(new Integer(i));
+                    output[i].writeObject("TIE");
+                    output[i].writeObject(winners);
+                }
+            }
             else
                 output[i].writeObject("LOSE");
         }
@@ -79,7 +92,7 @@ public class Server extends Thread  {
     public void run() {
 
         System.out.println("Splendor is running");
-        while(true){
+        //while(true){
             try {
                 gameInit();
                 //game loop
@@ -94,8 +107,22 @@ public class Server extends Thread  {
                             break;
                         }
                         if (request.startsWith("VICTORY")) {
-                            //
-                            announceResult(currentPlayer);
+                            Game updatedGame = (Game) input[currentPlayer].readObject();
+                            broadcastPlayers(updatedGame);
+
+                            ArrayList<Integer> winners = new ArrayList<>();
+                            winners.add(currentPlayer);
+
+                            for(int nextPlayer = currentPlayer+1; nextPlayer < NUM_PLAYER; nextPlayer++){
+                                //output[nextPlayer].writeObject("MOVE");
+                                request = (String) input[nextPlayer].readObject();
+                                updatedGame = (Game) input[nextPlayer].readObject();
+                                if(request.startsWith("VICTORY")){
+                                    winners.add(nextPlayer);
+                                }
+                                broadcastPlayers(updatedGame);
+                            }
+                            announceResult(winners);
                             gameExit();
                             break;
                         }
@@ -114,7 +141,7 @@ public class Server extends Thread  {
 
                         //next one;
                         currentPlayer = (currentPlayer + 1) % NUM_PLAYER;
-                        output[currentPlayer].writeObject("MOVE");
+                        //output[currentPlayer].writeObject("MOVE");
 
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
@@ -125,9 +152,9 @@ public class Server extends Thread  {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                break;
+                //break;
             }
-        }
+        //}
         System.out.println("Server closed");
 
     }

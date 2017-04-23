@@ -256,7 +256,7 @@ public class Player implements Serializable{
 	 * @return true if the player won
 	 */
 	public final boolean hasWon(){
-		return this.score >= 15;
+		return this.score >= WINNING_SCORE;
 	}
 
 }

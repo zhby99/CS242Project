@@ -23,6 +23,9 @@ public class Client {
     private ObjectOutputStream out = null;
     private Controller controller;
 
+    private int id;
+    private String username;
+
     public Client(String serverAddress) throws Exception {
 
         // Setup networking
@@ -31,6 +34,8 @@ public class Client {
 
         in = new ObjectInputStream(socket.getInputStream());
         out = new ObjectOutputStream(socket.getOutputStream());
+
+        id = (Integer) in.readObject();
         Game game = (Game) in.readObject();
         controller = new Controller(game, out);
 
@@ -40,32 +45,27 @@ public class Client {
         //out.writeObject(game);
     }
 
-    public void play() throws ClassNotFoundException {
+    public void play() throws ClassNotFoundException, IOException {
         while(true){
             String response = null;
             try {
                 response = (String) in.readObject();
                 if(response.startsWith("WIN")){
-                    //out.writeObject("EXIT");
                     System.out.println("You win :)");
-                    socket.close();
                     break;
                 }
                 if(response.startsWith("TIE")){
-                    //out.writeObject("EXIT");
-                    ArrayList<String> playerList = (ArrayList<String>) in.readObject();
+                    ArrayList<Integer> playerList = (ArrayList<Integer>) in.readObject();
+                    playerList.remove(new Integer(id));
                     System.out.printf("You tie with:");
                     for(int i = 0; i<playerList.size();i++){
-                        System.out.printf(" %s",playerList.get(i));
+                        System.out.printf(" %d",playerList.get(i));
                     }
-                    System.out.println("!");
-                    socket.close();
+                    System.out.println(" !");
                     break;
                 }
                 if(response.startsWith("LOSE")){
-                    //out.writeObject("EXIT");
                     System.out.println("You lose :(");
-                    socket.close();
                     break;
                 }
                 if(response.startsWith("MOVE")){
@@ -78,13 +78,14 @@ public class Client {
                     controller.boardUI.updateByGame(updatedGame);
                 }
 
-                //socket.close();
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         }
+        socket.close();
+        //controller.boardUI.window.setVisible(false);
+        //controller.boardUI.window.dispose();
         System.out.println("Game Over");
     }
 
