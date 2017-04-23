@@ -1,12 +1,13 @@
 package Model.utils;
 
+import java.io.Serializable;
 import java.util.Iterator;
 
 import static java.lang.Math.*;
 /**
  * Created by boyinzhang on 4/8/17.
  */
-public class GemInfo implements Iterable<Integer>{
+public class GemInfo implements Iterable<Integer>,Serializable {
 
     public int diamond;
     public int emerald;

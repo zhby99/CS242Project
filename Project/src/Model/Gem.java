@@ -1,9 +1,11 @@
 package Model;
 
+import java.io.Serializable;
+
 /**
  * Created by wu on 4/8/17.
  */
-public enum Gem {
+public enum Gem  implements Serializable {
     DIAMOND("Diamond",1){
 
     },

@@ -1,12 +1,14 @@
 package Model;
 import Model.utils.*;
 
+import java.io.Serializable;
+
 import static Model.utils.GameUtils.NOBLE_SCORE;
 
 /**
  * Created by wu on 4/8/17.
  */
-public class Noble {
+public class Noble  implements Serializable {
 	private int score;
 	private GemInfo threshold;
 	private boolean isRecruited;

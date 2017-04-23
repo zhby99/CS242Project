@@ -148,7 +148,7 @@ public class PlayerPanel extends JPanel {
             default: break;
         }
 
-        BufferedImage buffered = new BufferedImage(width, width, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage buffered = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = buffered.createGraphics();
         g2d.setColor(fillColor);
         g2d.fillRect(0,0,width,height);
