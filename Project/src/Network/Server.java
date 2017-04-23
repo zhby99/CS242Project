@@ -3,17 +3,13 @@ package Network;
 
 import Game.Game;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 /**
  * Created by boyinzhang on 4/22/17.
  */
 public class Server {
-
     /**
      * Runs the application. Pairs up clients that connect.
      */
@@ -24,6 +20,8 @@ public class Server {
         try {
             while (true){
                 Game game = new Game(listener);
+
+
             }
         } finally {
             listener.close();
