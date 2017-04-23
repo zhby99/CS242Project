@@ -2,6 +2,7 @@ package Model;
 
 import Model.utils.GemInfo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -11,7 +12,7 @@ import static Model.utils.GameUtils.*;
 /**
  * Created by yu on 4/8/17.
  */
-public class Board {
+public class Board implements Serializable {
 
     private int numPlayer;
     private Noble[] nobles;
