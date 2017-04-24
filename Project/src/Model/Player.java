@@ -138,6 +138,9 @@ public class Player implements Serializable{
 	 * @return whether the player can buy the card
 	 */
 	public boolean buyCard(Card newCard, boolean isReserved){
+		if(isReserved && !reserves.contains(newCard)){
+			return false;
+		}
 		GemInfo requiredGem = newCard.getDevelopmentCost();
 		GemInfo restGem = newCard.getDevelopmentCost();
 		//requiredGem is the gem we need to pay for this card
@@ -158,10 +161,12 @@ public class Player implements Serializable{
 			reduceGems(requiredGem,restGem);
 			board.changeGem(requiredGem);
 			this.gems.setGems(max(this.gems.diamond, 0), max(this.gems.emerald, 0), max(this.gems.onyx, 0), max(this.gems.ruby, 0), max(this.gems.sapphire, 0));
-			if(isReserved) {
-				reserves.remove(newCard);
-				addNewCard(newCard);
-				return true;
+			if(isReserved){
+				if(reserves.contains(newCard)) {
+					reserves.remove(newCard);
+					addNewCard(newCard);
+					return true;
+				}
 			}
 			else {
 				addNewCard(newCard);

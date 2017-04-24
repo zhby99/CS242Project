@@ -64,7 +64,7 @@ public class Controller{
     private void addNewGameListener() {
         boardUI.addNewGameListener(new ActionListener(){
             public void actionPerformed(ActionEvent event) {
-                requestServer("RESTART");
+                sendVoteResult("RESTART");
                 //newGame();
             }
         });
@@ -171,6 +171,10 @@ public class Controller{
         addReserveListener(false);
     }
 
+    /**
+     * Indicator whether it is used for server mode.
+     * @param serverMode true if it is the server mode
+     */
     private void addFunctionalListeners(boolean serverMode){
         addResetLisenter(true);
         addCollectListener(true);
@@ -364,6 +368,10 @@ public class Controller{
         }
     }
 
+    /**
+     * Send text information and the game to server
+     * @param msg text indicator
+     */
     private void requestServer(String msg){
         try {
             out.writeObject(msg);
@@ -373,14 +381,29 @@ public class Controller{
         }
     }
 
+    /**
+     * Send text information to server
+     * @param msg text information
+     */
+    private void sendVoteResult(String msg){
+        try {
+            out.writeObject(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Ask each player if they agree to start a new game, send the result to server.
+     */
     public void voteForNewGame(){
         int replyNewGame = JOptionPane.showConfirmDialog(null,
                 name+", Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
         if(replyNewGame==JOptionPane.YES_OPTION) {
-            requestServer("AGREE");
+            sendVoteResult("AGREE");
         }
         else{
-            requestServer("DECLINE");
+            sendVoteResult("DECLINE");
         }
     }
 

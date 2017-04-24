@@ -98,6 +98,10 @@ public class Server extends Thread  {
 
     }
 
+    /**
+     * Send vote commend to all clients
+     * @throws IOException
+     */
     private void askNewGame() throws IOException{
         for(int i = 0; i < NUM_PLAYER; i++){
             output[i].writeObject("VOTE");
@@ -157,16 +161,15 @@ public class Server extends Thread  {
 
 						if (request.startsWith("RESTART")) {
                             //add consensus function
-                            Game updatedGame = (Game) input[currentPlayer].readObject();
                             tmp = currentPlayer;
                             askNewGame();
                             continue;
 						}
 
                         if(request.startsWith("AGREE")){
-                            Game updatedGame = (Game) input[currentPlayer].readObject();
                             vote += 1;
                             agree +=1;
+                            currentPlayer = (currentPlayer + 1) % NUM_PLAYER;
                             if(agree == NUM_PLAYER){
                                 vote = 0;
                                 agree = 0;
@@ -177,31 +180,32 @@ public class Server extends Thread  {
                             else if(vote == NUM_PLAYER){
                                 vote = 0;
                                 agree = 0;
-                                broadcastPlayers(updatedGame);
                                 currentPlayer = tmp;
                             }
+
                             continue;
                         }
 
                         if(request.startsWith("DECLINE")){
-                            Game updatedGame = (Game) input[currentPlayer].readObject();
                             vote += 1;
+                            currentPlayer = (currentPlayer + 1) % NUM_PLAYER;
                             if(vote == NUM_PLAYER){
                                 vote = 0;
                                 agree = 0;
-                                broadcastPlayers(updatedGame);
                                 currentPlayer = tmp;
                             }
+
                             continue;
                         }
 
                         if (request.startsWith("COLLECT") || request.startsWith("PURCHASE") || request.startsWith("RESERVE")) {
                             Game updatedGame = (Game) input[currentPlayer].readObject();
                             broadcastPlayers(updatedGame);
+                            currentPlayer = (currentPlayer + 1) % NUM_PLAYER;
                         }
 
                         //next one;
-                        currentPlayer = (currentPlayer + 1) % NUM_PLAYER;
+
                         //output[currentPlayer].writeObject("MOVE");
 
                     } catch (ClassNotFoundException e) {
