@@ -1,7 +1,6 @@
 package Game;
 
-import Model.Board;
-import Model.Player;
+import Model.*;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -27,6 +26,7 @@ public class Game implements Serializable{
         this.gameBoard = new Board(NUM_PLAYER);
         this.gameBoard.initialBoard();
         this.players = new Player[NUM_PLAYER];
+
         for(int i = 0; i < NUM_PLAYER; i++){
             players[i] = new Player(i+1 , this.gameBoard);
         }
@@ -37,19 +37,26 @@ public class Game implements Serializable{
         this.gameBoard = new Board(NUM_PLAYER);
         this.gameBoard.initialBoard();
         this.players = new Player[NUM_PLAYER];
+
+        for(int i = 0; i < NUM_PLAYER; i++){
+            players[i] = new Player(i+1 , this.gameBoard);
+        }
+
+        currentPlayer = players[0];
+
+        //this.players = new Player[NUM_PLAYER];
+
+        /*
         for(int i = 0; i < NUM_PLAYER; i++){
             Socket socket = listener.accept();
             players[i] = new Player(socket, i+1 , this.gameBoard);
-            OutputStream os = socket.getOutputStream();
-            ObjectOutputStream outSteam = new ObjectOutputStream(os);
-            outSteam.writeObject(this);
-            outSteam.close();
-            os.close();
         }
+
+        /*
         currentPlayer = players[0];
         for(int i = 0; i < NUM_PLAYER; i++){
             players[i].start();
-        }
+        }*/
     }
 
     public Board getGameBoard(){
@@ -60,14 +67,14 @@ public class Game implements Serializable{
         return this.currentPlayer;
     }
 
-    public Player[] getPlayers(){
-        return players;
-    }
+    public Player[] getPlayers(){return players;}
 
     /**
      * Used to check if the someone won.
      * @return
      */
+
+
     public final int checkEndofGame(){
         int numberOfWining = 0;
         for(Player player: this.players){
@@ -81,6 +88,7 @@ public class Game implements Serializable{
     /**
      * Turn the next player
      */
+
     public void turnToNextPlayer(){
         int currentId = currentPlayer.getPlayerId();
         if(currentId == NUM_PLAYER){
@@ -88,4 +96,6 @@ public class Game implements Serializable{
         }
         currentPlayer = this.players[currentId];
     }
+
+
 }

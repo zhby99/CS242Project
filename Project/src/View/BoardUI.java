@@ -26,7 +26,7 @@ import Model.*;
  */
 public class BoardUI {
 
-    private JFrame window;
+    public JFrame window;
     private JPanel gameArea;
     private JPanel playerArea;
 
@@ -339,8 +339,9 @@ public class BoardUI {
         }
     }
 
-
+/*
     public static void main(String[] args) throws IOException {
         new BoardUI();
     }
+*/
 }

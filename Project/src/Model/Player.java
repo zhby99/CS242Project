@@ -1,10 +1,7 @@
 package Model;
 import Model.utils.*;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import Game.Game;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +15,7 @@ import static java.lang.Math.*;
 /**
  * Created by wu on 4/8/17.
  */
-public class Player extends Thread{
+public class Player implements Serializable{
 	final private int id;
 	private int score;
 	private GemInfo gems;
@@ -27,14 +24,6 @@ public class Player extends Thread{
 	int numCards;
 	ArrayList<Card> reserves;
 	private Board board;
-
-	/*
-	The following part for Networking
-	 */
-	private Socket socket;
-	private BufferedReader input;
-	private PrintWriter output;
-
 
 	public Player(int pid, Board newBoard){
 		id = pid;
@@ -47,29 +36,6 @@ public class Player extends Thread{
 		board = newBoard;
 
 	}
-
-	public Player(Socket socket, int pid, Board newBoard){
-		this.socket = socket;
-		id = pid;
-		score = 0;
-		gems = new GemInfo(0);
-		golds = 0;
-		cards = new GemInfo(0);
-		numCards = 0;
-		reserves = new ArrayList<Card>();
-		board = newBoard;
-
-		try {
-			input = new BufferedReader(
-					new InputStreamReader(socket.getInputStream()));
-			output = new PrintWriter(socket.getOutputStream(), true);
-			output.println("WELCOME " + "Player "+ id);
-			output.println("MESSAGE Waiting for opponent to connect");
-		} catch (IOException e) {
-			System.out.println("Player died: " + e);
-		}
-	}
-
 	public int getPlayerId(){return id;}
 	public int getScore() {return score;}
 	public GemInfo getGems() {
@@ -96,19 +62,21 @@ public class Player extends Thread{
 
 
 
-	/**
-	 * The run method of this thread.
-	 */
+	/*
 	public void run() {
         try {
             // The thread is only started after everyone connects.
-            output.println("MESSAGE All players connected");
-
+            //output.println("MESSAGE All players connected");
 
 
             // Repeatedly get commands from the client and process them.
             while (true) {
                 String command = input.readLine();
+                if(command == null)
+                	continue;
+
+                System.out.println(command);
+
                 if (command.startsWith("COLLECT")) {
                     String gemInfo = command.substring(8);
                     Scanner scanner = new Scanner(gemInfo);
@@ -120,6 +88,7 @@ public class Player extends Thread{
                 } else if (command.startsWith("QUIT")) {
                     return;
                 }
+
             }
         } catch (IOException e) {
             System.out.println("Player died: " + e);
@@ -127,7 +96,7 @@ public class Player extends Thread{
             try {socket.close();} catch (IOException e) {}
         }
     }
-
+*/
 
 	/**
 	 * add a new card to the player's own cards
@@ -234,6 +203,12 @@ public class Player extends Thread{
 		if(collectedGems.GemTotalNum() > MAX_COLLECT_GEMS)
 			return false;
 
+
+		//player cannot hold more than 10 gems at a time
+		if(collectedGems.GemTotalNum() + gems.GemTotalNum()+golds > MAX_HOLD_GEMS){
+			return false;
+		}
+
 		//you can select 3 distinct gems
 		if(collectedGems.GemTotalNum() == MAX_COLLECT_GEMS){
 			if(collectedGems.GemMaxTypeNum() >= MAX_SAME_TYPE_GEMS)
@@ -242,35 +217,19 @@ public class Player extends Thread{
 
 		//or two same gems if there are more than 4 gems of that type on the board
 		if(collectedGems.GemTotalNum() == MAX_SAME_TYPE_GEMS){
-			if(collectedGems.diamond == MAX_SAME_TYPE_GEMS) {
-				if (this.board.availableGem.diamond < MIN_SAME_TYPE_GEMS_ON_BOARD)
-					return false;
-			}
-			else if(collectedGems.emerald == MAX_SAME_TYPE_GEMS) {
-				if (this.board.availableGem.emerald < MIN_SAME_TYPE_GEMS_ON_BOARD)
-					return false;
-			}
-			else if(collectedGems.onyx == MAX_SAME_TYPE_GEMS) {
-				if (this.board.availableGem.onyx < MIN_SAME_TYPE_GEMS_ON_BOARD)
-					return false;
-			}
-			else if(collectedGems.ruby == MAX_SAME_TYPE_GEMS) {
-				if (this.board.availableGem.ruby < MIN_SAME_TYPE_GEMS_ON_BOARD)
-					return false;
-			}
-			else{
-				if (this.board.availableGem.sapphire < MIN_SAME_TYPE_GEMS_ON_BOARD)
-					return false;
+			for(int i = 1; i <= 5; i++) {
+				if(collectedGems.getByIndex(i) == MAX_SAME_TYPE_GEMS) {
+					if (this.board.availableGem.getByIndex(i) < MIN_SAME_TYPE_GEMS_ON_BOARD)
+						return false;
+				}
 			}
 		}
 
-
-
+		//check if there are enough available gems on the board
 		for(int i = 1; i <= 5; i++) {
 			if(this.board.availableGem.getByIndex(i) <= 0 && collectedGems.getByIndex(i) > 0)
 				return false;
 		}
-
 
 		combineGems(this.gems, collectedGems);
 		reduceGems(this.board.availableGem, collectedGems);
@@ -297,7 +256,7 @@ public class Player extends Thread{
 	 * @return true if the player won
 	 */
 	public final boolean hasWon(){
-		return this.score >= 15;
+		return this.score >= WINNING_SCORE;
 	}
 
 }

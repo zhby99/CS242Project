@@ -1,26 +1,28 @@
 package Controller;
 
 import Game.Game;
-import Model.Card;
-import Model.Player;
+import Model.*;
 import Model.utils.GemInfo;
 import View.BoardUI;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
+import java.io.*;
 
 import static Model.utils.GameUtils.*;
 
 /**
  * Created by boyinzhang on 4/17/17.
  */
-public class Controller {
-    private Game game;
-    private BoardUI boardUI;
+public class Controller{
+    public Game game;
+    public BoardUI boardUI;
     private Card selectedCard;
     private GemInfo currentGemInfo;
+
+    private ObjectOutputStream out;
 
     public Controller(){
         this.game = new Game();
@@ -31,6 +33,18 @@ public class Controller {
         addCardListeners();
         addFunctionalListeners();
     }
+
+    public Controller(Game game, ObjectOutputStream out){
+        this.game = game;
+        this.out = out;
+        this.boardUI = new BoardUI(game);
+        this.currentGemInfo = new GemInfo(0);
+        addMenuItemListener();
+        addGemsListener();
+        addCardListeners();
+        addFunctionalListeners();
+    }
+
 
     /**
      * Helper function to help initialize the gui
@@ -46,7 +60,8 @@ public class Controller {
     private void addNewGameListener() {
         boardUI.addNewGameListener(new ActionListener(){
             public void actionPerformed(ActionEvent event) {
-                newGame();
+                requestServer("RESTART");
+                //newGame();
             }
         });
     }
@@ -64,6 +79,7 @@ public class Controller {
     private void addExitListener() {
         boardUI.addExitListener(new ActionListener(){
             public void actionPerformed(ActionEvent event) {
+                requestServer("EXIT");
                 System.exit(0);
             }
         });
@@ -79,8 +95,6 @@ public class Controller {
                 currentGemInfo.updateInfo(1,0,0,0,0);
             }
         });
-
-
 
         this.boardUI.getGems()[3].addActionListener(new ActionListener() {
             @Override
@@ -180,9 +194,12 @@ public class Controller {
                 }
                 else{
                     currentGemInfo.reset();
-                    if (checkEnd()) return;
+                    //if (checkEnd()) return;
                     game.turnToNextPlayer();
-                    boardUI.updateByGame(game);
+
+                    requestServer("COLLECT");
+
+                    //boardUI.updateByGame(game);
                 }
 
             }
@@ -212,9 +229,16 @@ public class Controller {
                     game.getGameBoard().setCardOnBoard(newCard, selectedCard.getPosition());
                     selectedCard = null;
                     game.getCurrentPlayer().recruitAvailableNobles();
-                    if (checkEnd()) return;
+                    if (checkEnd()) {
+
+                        game.turnToNextPlayer();
+                        requestServer("VICTORY");
+                        return;
+                    }
                     game.turnToNextPlayer();
-                    boardUI.updateByGame(game);
+                    requestServer("PURCHASE");
+
+                    //boardUI.updateByGame(game);
                 }
 
             }
@@ -222,6 +246,8 @@ public class Controller {
     }
 
     private boolean checkEnd() {
+
+        /*
         if(game.getCurrentPlayer().getPlayerId() == NUM_PLAYER){
             int numberOfWining = game.checkEndofGame();
             if(numberOfWining == 1){
@@ -245,6 +271,11 @@ public class Controller {
                 }
             }
         }
+        */
+        if(game.currentPlayer.hasWon())
+            return true;
+
+
         return false;
     }
 
@@ -270,14 +301,39 @@ public class Controller {
                     Card newCard = game.getGameBoard().getNewCard(selectedCard.getPosition()[0]);
                     game.getGameBoard().setCardOnBoard(newCard, selectedCard.getPosition());
                     selectedCard = null;
-                    if (checkEnd()) return;
+                    //if (checkEnd()) return;
                     game.turnToNextPlayer();
-                    boardUI.updateByGame(game);
+                    //boardUI.window.setEnabled(false);
+                    requestServer("RESERVE");
+
+                    //boardUI.updateByGame(game);
                 }
             }
         });
     }
 
+    void setPanelEnabled(JPanel panel, Boolean isEnabled) {
+        panel.setEnabled(isEnabled);
+
+        Component[] components = panel.getComponents();
+
+        for(int i = 0; i < components.length; i++) {
+            if(components[i].getClass().getName() == "javax.swing.JPanel") {
+                setPanelEnabled((JPanel) components[i], isEnabled);
+            }
+
+            components[i].setEnabled(isEnabled);
+        }
+    }
+
+    private void requestServer(String msg){
+        try {
+            out.writeObject(msg);
+            out.writeObject(game);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         new Controller();

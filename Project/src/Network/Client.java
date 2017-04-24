@@ -1,58 +1,102 @@
 package Network;
 
+import Controller.Controller;
 import Game.Game;
-import View.BoardUI;
+import Model.*;
+import View.*;
 
+import java.lang.management.ManagementFactory;
+import java.lang.reflect.Array;
 import java.net.*;
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * Created by boyinzhang on 4/22/17.
  */
 public class Client {
 
-    private static int PORT = 8901;
+    private static int PORT = 8080;
     private Socket socket;
 
-    private BufferedReader in = null;
-    private PrintWriter out = null;
-    private boolean connected = false;
-    private Game game;
-    private BoardUI gui;
+    private ObjectInputStream in = null;
+    private ObjectOutputStream out = null;
+    private Controller controller;
+
+    private int id;
+    private String username;
 
     public Client(String serverAddress) throws Exception {
 
         // Setup networking
-
         socket = new Socket(serverAddress, PORT);
-        System.out.println("Connected");
-        InputStream is = socket.getInputStream();
-        ObjectInputStream gameInputStream = new ObjectInputStream(is);
-        game = (Game) gameInputStream.readObject();
-        gameInputStream.close();
-        is.close();
+        System.out.println("Connected to " + socket.getRemoteSocketAddress());
 
+        in = new ObjectInputStream(socket.getInputStream());
+        out = new ObjectOutputStream(socket.getOutputStream());
 
+        id = (Integer) in.readObject();
+        Game game = (Game) in.readObject();
+        controller = new Controller(game, out);
 
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new PrintWriter(socket.getOutputStream(), true);
+        //name interface
+        out.writeObject(ManagementFactory.getRuntimeMXBean().getName()+" initialized");
 
-        //this.gui.updateByGame(game);
+        //out.writeObject(game);
+    }
 
+    public void play() throws ClassNotFoundException, IOException {
+        while(true){
+            String response = null;
+            try {
+                response = (String) in.readObject();
+                if(response.startsWith("WIN")){
+                    System.out.println("You win :)");
+                    break;
+                }
+                if(response.startsWith("TIE")){
+                    ArrayList<Integer> playerList = (ArrayList<Integer>) in.readObject();
+                    playerList.remove(new Integer(id));
+                    System.out.printf("You tie with:");
+                    for(int i = 0; i<playerList.size();i++){
+                        System.out.printf(" %d",playerList.get(i));
+                    }
+                    System.out.println(" !");
+                    break;
+                }
+                if(response.startsWith("LOSE")){
+                    System.out.println("You lose :(");
+                    break;
+                }
+                if(response.startsWith("MOVE")){
 
+                    //enable all buttons
+                }
+                if(response.startsWith("UPDATE")){
+                    Game updatedGame = (Game) in.readObject();
+                    controller.game = updatedGame;
+                    controller.boardUI.updateByGame(updatedGame);
+                }
 
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+        }
+        socket.close();
+        //controller.boardUI.window.setVisible(false);
+        //controller.boardUI.window.dispose();
+        System.out.println("Game Over");
     }
 
 
     //main
     public static void main(String[] args) throws Exception {
 
-        //while (true) {
         String serverAddress = (args.length == 0) ? "localhost" : args[1];
         Client client = new Client(serverAddress);
+        client.play();
 
-        //}
     }
 
 }
