@@ -37,7 +37,7 @@ public class Client {
 
         id = (Integer) in.readObject();
         Game game = (Game) in.readObject();
-        controller = new Controller(game, out);
+        controller = new Controller(game, out, id);
 
         //name interface
         out.writeObject(ManagementFactory.getRuntimeMXBean().getName()+" initialized");
