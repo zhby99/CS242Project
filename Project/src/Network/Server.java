@@ -123,11 +123,11 @@ public class Server extends Thread  {
                             ArrayList<Integer> winners = new ArrayList<>();
                             winners.add(currentPlayer);
 
-                            for(int nextPlayer = currentPlayer+1; nextPlayer < NUM_PLAYER; nextPlayer++){
+                            for (int nextPlayer = currentPlayer + 1; nextPlayer < NUM_PLAYER; nextPlayer++) {
                                 //output[nextPlayer].writeObject("MOVE");
                                 request = (String) input[nextPlayer].readObject();
                                 updatedGame = (Game) input[nextPlayer].readObject();
-                                if(request.startsWith("VICTORY")){
+                                if (request.startsWith("VICTORY")) {
                                     winners.add(nextPlayer);
                                 }
                                 broadcastPlayers(updatedGame);
@@ -139,21 +139,22 @@ public class Server extends Thread  {
 
                         if (request.startsWith("RESTART")) {
                             //add consensus function
-                            Game updatedGame = (Game) input[currentPlayer].readObject();
+                            input[currentPlayer].readObject();
                             askNewGame();
-                            continue;
-                        }
 
-                        if(request.startsWith("AGREE")){
-                            Game updatedGame = (Game) input[currentPlayer].readObject();
-                            vote += 1;
-                            if(vote == NUM_PLAYER){
-                                vote = 0;
-                                Game newGame = new Game();
-                                currentPlayer = 0;
-                                broadcastPlayers(newGame);
+                            if (request.startsWith("AGREE")) {
+                                //flush input stream
+                                input[currentPlayer].readObject();
+                                vote += 1;
+                                if (vote == NUM_PLAYER) {
+                                    vote = 0;
+                                    Game newGame = new Game();
+                                    currentPlayer = 0;
+                                    broadcastPlayers(newGame);
+                                }
+                                continue;
                             }
-                            continue;
+
                         }
 
                         if (request.startsWith("COLLECT") || request.startsWith("PURCHASE") || request.startsWith("RESERVE")) {
