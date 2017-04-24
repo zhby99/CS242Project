@@ -87,8 +87,6 @@ public class Client {
 
         }
         socket.close();
-        //controller.boardUI.window.setVisible(false);
-        //controller.boardUI.window.dispose();
         System.out.println("Game Over");
     }
 

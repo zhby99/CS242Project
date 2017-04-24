@@ -82,6 +82,10 @@ public class Server extends Thread  {
 
     }
 
+    /**
+     * Send vote commend to all clients
+     * @throws IOException
+     */
     private void askNewGame() throws IOException{
         for(int i = 0; i < NUM_PLAYER; i++){
             output[i].writeObject("VOTE");
