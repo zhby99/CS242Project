@@ -37,6 +37,10 @@ public class Server extends Thread  {
     private void gameInit() throws IOException {
         Game game = new Game();
 
+        gameHelper(game);
+    }
+
+    private void gameHelper(Game game) throws IOException {
         for(int i = 0; i <  NUM_PLAYER; i++) {
             output[i].writeObject(i);
             output[i].writeObject(game);
@@ -49,7 +53,6 @@ public class Server extends Thread  {
         }
         System.out.println("Game Starts");
     }
-
 
 
     public void gameExit() throws IOException {
@@ -79,6 +82,12 @@ public class Server extends Thread  {
 
     }
 
+    private void askNewGame() throws IOException{
+        for(int i = 0; i < NUM_PLAYER; i++){
+            output[i].writeObject("VOTE");
+        }
+    }
+
     public void broadcastPlayers(Game updatedGame) throws IOException {
 
         for(int i = 0; i <  NUM_PLAYER; i++){
@@ -97,6 +106,7 @@ public class Server extends Thread  {
                 gameInit();
                 //game loop
                 int currentPlayer = 0;
+                int vote = 0;
                 while (true) {
                     try {
                         //action
@@ -129,9 +139,21 @@ public class Server extends Thread  {
 
                         if (request.startsWith("RESTART")) {
                             //add consensus function
-                            Game newGame = new Game();
-                            currentPlayer = 0;
-                            broadcastPlayers(newGame);
+                            Game updatedGame = (Game) input[currentPlayer].readObject();
+                            askNewGame();
+                            continue;
+                        }
+
+                        if(request.startsWith("AGREE")){
+                            Game updatedGame = (Game) input[currentPlayer].readObject();
+                            vote += 1;
+                            if(vote == NUM_PLAYER){
+                                vote = 0;
+                                Game newGame = new Game();
+                                currentPlayer = 0;
+                                broadcastPlayers(newGame);
+                            }
+                            continue;
                         }
 
                         if (request.startsWith("COLLECT") || request.startsWith("PURCHASE") || request.startsWith("RESERVE")) {

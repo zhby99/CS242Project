@@ -42,7 +42,7 @@ public class Controller{
         addMenuItemListener();
         addGemsListener();
         addCardListeners();
-        addFunctionalListeners(id);
+        addFunctionalListeners(id, true);
     }
 
 
@@ -161,42 +161,33 @@ public class Controller{
      * Add listeners to the four major operations
      */
     private void addFunctionalListeners(){
-        addResetLisenter();
-        addCollectListener();
-        addBuyListener();
-        addReserveListener();
+        addResetLisenter(0,false);
+        addCollectListener(0,false);
+        addBuyListener(0,false);
+        addReserveListener(0,false);
     }
 
-    private void addFunctionalListeners(int id){
-        addResetLisenter(id);
-        addCollectListener(id);
-        addBuyListener(id);
-        addReserveListener(id);
+    private void addFunctionalListeners(int id, boolean serverMode){
+        addResetLisenter(id, true);
+        addCollectListener(id, true);
+        addBuyListener(id, true);
+        addReserveListener(id, true);
     }
 
     /**
      * Add listener to the reset button
      */
-    private void addResetLisenter(){
-        this.boardUI.getReset().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                currentGemInfo.reset();
-            }
-        });
-    }
 
-    private void addResetLisenter(int id){
+    private void addResetLisenter(int id, boolean serverMode){
         this.boardUI.getReset().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(game.getCurrentPlayer().getPlayerId() == id+1) {
-                    currentGemInfo.reset();
-                }
-                else{
+                if(game.getCurrentPlayer().getPlayerId() != id+1 && serverMode) {
                     JOptionPane.showMessageDialog(null, "Wait for your opponent's move",
                             "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
+                currentGemInfo.reset();
             }
         });
     }
@@ -204,35 +195,12 @@ public class Controller{
     /**
      * Add listener to the collect button
      */
-    private void addCollectListener(){
+
+    private void addCollectListener(int id, boolean serverMode){
         this.boardUI.getCollect().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean status = game.getCurrentPlayer().collectGems(currentGemInfo);
-                if(!status){
-                    JOptionPane.showMessageDialog(null, "Invalid Collection! Please make another try!",
-                            "Warning", JOptionPane.WARNING_MESSAGE);
-                    currentGemInfo.reset();
-                }
-                else{
-                    currentGemInfo.reset();
-                    //if (checkEnd()) return;
-                    game.turnToNextPlayer();
-
-                    requestServer("COLLECT");
-
-                    //boardUI.updateByGame(game);
-                }
-
-            }
-        });
-    }
-
-    private void addCollectListener(int id){
-        this.boardUI.getCollect().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(game.getCurrentPlayer().getPlayerId() != id+1) {
+                if(game.getCurrentPlayer().getPlayerId() != id+1 && serverMode) {
                     JOptionPane.showMessageDialog(null, "Wait for your opponent's move",
                             "Warning", JOptionPane.WARNING_MESSAGE);
                     return;
@@ -261,49 +229,11 @@ public class Controller{
     /**
      * Add listener to the buy button
      */
-    private void addBuyListener(){
+    private void addBuyListener(int id, boolean serverMode){
         this.boardUI.getBuy().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(selectedCard == null){
-                    JOptionPane.showMessageDialog(null, "Must select one card!",
-                            "Warning", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                boolean status = game.getCurrentPlayer().buyCard(selectedCard,selectedCard.isReserved());
-                if(!status){
-                    JOptionPane.showMessageDialog(null, "Cannot buy that card! Please make another try!",
-                            "Warning", JOptionPane.WARNING_MESSAGE);
-                    selectedCard = null;
-                }
-                else{
-                    Card newCard = game.getGameBoard().getNewCard(selectedCard.getPosition()[0]);
-                    game.getGameBoard().setCardOnBoard(newCard, selectedCard.getPosition());
-                    selectedCard = null;
-                    game.getCurrentPlayer().recruitAvailableNobles();
-                    if (checkEnd()) {
-
-                        game.turnToNextPlayer();
-                        requestServer("VICTORY");
-                        return;
-                    }
-                    game.turnToNextPlayer();
-                    requestServer("PURCHASE");
-
-                    //boardUI.updateByGame(game);
-                }
-
-            }
-        });
-    }
-
-
-
-    private void addBuyListener(int id){
-        this.boardUI.getBuy().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(game.getCurrentPlayer().getPlayerId() != id+1) {
+                if(game.getCurrentPlayer().getPlayerId() != id+1 && serverMode) {
                     JOptionPane.showMessageDialog(null, "Wait for your opponent's move",
                             "Warning", JOptionPane.WARNING_MESSAGE);
                     return;
@@ -378,11 +308,12 @@ public class Controller{
     /**
      * Add listener to the reserve button
      */
-    private void addReserveListener(int id){
+    private void addReserveListener(int id, boolean serverMode){
         this.boardUI.getReserve().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(game.getCurrentPlayer().getPlayerId() != id+1) {
+                System.out.println("Reserve");
+                if(game.getCurrentPlayer().getPlayerId() != id+1 && serverMode) {
                     JOptionPane.showMessageDialog(null, "Wait for your opponent's move",
                             "Warning", JOptionPane.WARNING_MESSAGE);
                     return;
@@ -406,6 +337,7 @@ public class Controller{
                     game.turnToNextPlayer();
                     //boardUI.window.setEnabled(false);
                     requestServer("RESERVE");
+                    System.out.println("Reserve request made");
 
                     //boardUI.updateByGame(game);
                 }
@@ -413,35 +345,6 @@ public class Controller{
         });
     }
 
-    private void addReserveListener(){
-        this.boardUI.getReserve().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(selectedCard == null){
-                    JOptionPane.showMessageDialog(null, "Must select one card!",
-                            "Warning", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-                boolean status = game.getCurrentPlayer().reserveCard(selectedCard);
-                if(!status){
-                    JOptionPane.showMessageDialog(null, "Cannot reserve that card! Please make another try!",
-                            "Warning", JOptionPane.WARNING_MESSAGE);
-                    selectedCard = null;
-                }
-                else{
-                    Card newCard = game.getGameBoard().getNewCard(selectedCard.getPosition()[0]);
-                    game.getGameBoard().setCardOnBoard(newCard, selectedCard.getPosition());
-                    selectedCard = null;
-                    //if (checkEnd()) return;
-                    game.turnToNextPlayer();
-                    //boardUI.window.setEnabled(false);
-                    requestServer("RESERVE");
-
-                    //boardUI.updateByGame(game);
-                }
-            }
-        });
-    }
 
     void setPanelEnabled(JPanel panel, Boolean isEnabled) {
         panel.setEnabled(isEnabled);
@@ -463,6 +366,14 @@ public class Controller{
             out.writeObject(game);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void voteForNewGame(){
+        int replyNewGame = JOptionPane.showConfirmDialog(null,
+                "Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
+        if(replyNewGame==JOptionPane.YES_OPTION) {
+            requestServer("AGREE");
         }
     }
 
