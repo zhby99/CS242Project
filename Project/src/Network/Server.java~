@@ -139,14 +139,31 @@ public class Server extends Thread  {
                             break;
                         }
 
-						if (request.startsWith("RESTART")) {
+                        if (request.startsWith("RESTART")) {
                             //add consensus function
+<<<<<<< HEAD
+                            input[currentPlayer].readObject();
+=======
                             Game updatedGame = (Game) input[currentPlayer].readObject();
                             tmp = currentPlayer;
+>>>>>>> 93f954649666e02dcf91c0b2031069ffb7a7fe00
                             askNewGame();
-                            continue;
-						}
 
+<<<<<<< HEAD
+                            if (request.startsWith("AGREE")) {
+                                //flush input stream
+                                input[currentPlayer].readObject();
+                                vote += 1;
+                                if (vote == NUM_PLAYER) {
+                                    vote = 0;
+                                    Game newGame = new Game();
+                                    currentPlayer = 0;
+                                    broadcastPlayers(newGame);
+                                }
+                                continue;
+                            }
+
+=======
                         if(request.startsWith("AGREE")){
                             Game updatedGame = (Game) input[currentPlayer].readObject();
                             vote += 1;
@@ -177,6 +194,7 @@ public class Server extends Thread  {
                                 currentPlayer = tmp;
                             }
                             continue;
+>>>>>>> 93f954649666e02dcf91c0b2031069ffb7a7fe00
                         }
 
                         if (request.startsWith("COLLECT") || request.startsWith("PURCHASE") || request.startsWith("RESERVE")) {
