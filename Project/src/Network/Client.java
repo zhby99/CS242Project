@@ -10,6 +10,7 @@ import java.lang.reflect.Array;
 import java.net.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  * Created by boyinzhang on 4/22/17.
@@ -19,8 +20,11 @@ public class Client {
     private static int PORT = 8080;
     private Socket socket;
 
-    private ObjectInputStream in = null;
-    private ObjectOutputStream out = null;
+
+    Scanner keyboardInput = null;
+
+    private ObjectInputStream flowInput = null;
+    private ObjectOutputStream flowOutput = null;
     private Controller controller;
 
     private int id;
@@ -32,15 +36,23 @@ public class Client {
         socket = new Socket(serverAddress, PORT);
         System.out.println("Connected to " + socket.getRemoteSocketAddress());
 
-        in = new ObjectInputStream(socket.getInputStream());
-        out = new ObjectOutputStream(socket.getOutputStream());
+        flowInput = new ObjectInputStream(socket.getInputStream());
+        flowOutput = new ObjectOutputStream(socket.getOutputStream());
 
-        id = (Integer) in.readObject();
-        Game game = (Game) in.readObject();
-        controller = new Controller(game, out, id);
+
+        keyboardInput =new Scanner(System.in);
+        System.out.println("Please enter your username");
+        String name = keyboardInput.nextLine();
 
         //name interface
-        out.writeObject(ManagementFactory.getRuntimeMXBean().getName()+" initialized");
+        flowOutput.writeObject(name);
+
+        id = (Integer) flowInput.readObject();
+        Game game = (Game) flowInput.readObject();
+        controller = new Controller(game, flowOutput, id, name);
+
+        //name interface
+        flowOutput.writeObject(name+" initialized");
 
         //out.writeObject(game);
     }
@@ -49,13 +61,13 @@ public class Client {
         while(true){
             String response = null;
             try {
-                response = (String) in.readObject();
+                response = (String) flowInput.readObject();
                 if(response.startsWith("WIN")){
                     System.out.println("You win :)");
                     break;
                 }
-                else if(response.startsWith("TIE")){
-                    ArrayList<Integer> playerList = (ArrayList<Integer>) in.readObject();
+                else if(response.startsWith ("TIE")){
+                    ArrayList<Integer> playerList = (ArrayList<Integer>) flowInput.readObject();
                     playerList.remove(new Integer(id));
                     System.out.printf("You tie with:");
                     for(int i = 0; i<playerList.size();i++){
@@ -73,7 +85,7 @@ public class Client {
                     //enable all buttons
                 }
                 else if(response.startsWith("UPDATE")){
-                    Game updatedGame = (Game) in.readObject();
+                    Game updatedGame = (Game) flowInput.readObject();
                     controller.game = updatedGame;
                     controller.boardUI.updateByGame(updatedGame);
                 }

@@ -2,6 +2,8 @@ package Network;
 
 import Controller.Controller;
 import Game.*;
+
+import javax.print.DocFlavor;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -30,17 +32,30 @@ public class Server extends Thread  {
 
             output[i] = new ObjectOutputStream(server.getOutputStream());
             input[i] = new ObjectInputStream(server.getInputStream());
-
         }
+
     }
 
-    private void gameInit() throws IOException {
-        Game game = new Game();
+    private void gameInit() throws IOException{
 
+        ArrayList<String> names = new ArrayList<String>(NUM_PLAYER);
+        for(int i = 0; i < NUM_PLAYER; i++){
+            String username = null;
+            try {
+                username = (String)input[i].readObject();
+                names.add(username);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Game game = new Game(names);
+        System.out.println("new Game");
         gameHelper(game);
     }
 
     private void gameHelper(Game game) throws IOException {
+
         for(int i = 0; i <  NUM_PLAYER; i++) {
             output[i].writeObject(i);
             output[i].writeObject(game);
@@ -50,6 +65,7 @@ public class Server extends Thread  {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
+
         }
         System.out.println("Game Starts");
     }

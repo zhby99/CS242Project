@@ -23,10 +23,11 @@ public class Controller{
     private GemInfo currentGemInfo;
     private ObjectOutputStream out;
     private int id;
+    private String name;
 
     public Controller(){
         this.game = new Game();
-        this.boardUI = new BoardUI(game,0);
+        this.boardUI = new BoardUI(game,"anonymous");
         this.currentGemInfo = new GemInfo(0);
         this.id = 0;
         addMenuItemListener();
@@ -35,12 +36,13 @@ public class Controller{
         addFunctionalListeners();
     }
 
-    public Controller(Game game, ObjectOutputStream out, int id){
+    public Controller(Game game, ObjectOutputStream out, int id, String name){
+        this.id = id;
+        this.name = name;
         this.game = game;
         this.out = out;
-        this.boardUI = new BoardUI(game,id);
+        this.boardUI = new BoardUI(game,name);
         this.currentGemInfo = new GemInfo(0);
-        this.id = id;
         addMenuItemListener();
         addGemsListener();
         addCardListeners();
@@ -373,7 +375,7 @@ public class Controller{
 
     public void voteForNewGame(){
         int replyNewGame = JOptionPane.showConfirmDialog(null,
-                "Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
+                name+", Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
         if(replyNewGame==JOptionPane.YES_OPTION) {
             requestServer("AGREE");
         }

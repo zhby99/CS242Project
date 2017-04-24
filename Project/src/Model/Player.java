@@ -1,6 +1,8 @@
 package Model;
 import Model.utils.*;
 import Game.Game;
+
+import javax.print.DocFlavor;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import static java.lang.Math.*;
  */
 public class Player implements Serializable{
 	final private int id;
+	private String name;
 	private int score;
 	private GemInfo gems;
 	int golds;
@@ -25,8 +28,9 @@ public class Player implements Serializable{
 	ArrayList<Card> reserves;
 	private Board board;
 
-	public Player(int pid, Board newBoard){
+	public Player(int pid, Board newBoard, String username){
 		id = pid;
+		name = username;
 		score = 0;
 		gems = new GemInfo(0);
 		golds = 0;
@@ -38,6 +42,7 @@ public class Player implements Serializable{
 	}
 	public int getPlayerId(){return id;}
 	public int getScore() {return score;}
+	public String getName() {return name;}
 	public GemInfo getGems() {
 		return gems;
 	}

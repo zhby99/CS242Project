@@ -31,7 +31,7 @@ public class PlayerTests {
     @Test
     public void createPlayerTest() throws Exception{
         Board board = new Board(NUM_PLAYER);
-        Player player = new Player(0,board);
+        Player player = new Player(0,board,"anonymous");
 
         assertEquals(player.getPlayerId(), 0);
         assertEquals(player.getScore(), 0);
@@ -50,7 +50,7 @@ public class PlayerTests {
     @Test
     public void reserveCardTest() throws Exception{
         Board board = new Board(NUM_PLAYER);
-        Player player = new Player(0,board);
+        Player player = new Player(0,board,"anonymous");
 
         GemInfo developmentCost = new GemInfo(1,1,1,1,0);
         Card card = new Card(1,developmentCost,Gem.SAPPHIRE);
@@ -67,7 +67,7 @@ public class PlayerTests {
     @Test
     public void collectGemsTest() throws Exception{
         Board board = new Board(NUM_PLAYER);
-        Player player = new Player(0,board);
+        Player player = new Player(0,board,"anonymous");
 
         GemInfo selectedGems = new GemInfo(1,1,1,0,0);
         GemInfo leftGems = new GemInfo(6,6,6,7,7);
