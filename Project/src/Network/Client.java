@@ -54,7 +54,7 @@ public class Client {
                     System.out.println("You win :)");
                     break;
                 }
-                if(response.startsWith("TIE")){
+                else if(response.startsWith("TIE")){
                     ArrayList<Integer> playerList = (ArrayList<Integer>) in.readObject();
                     playerList.remove(new Integer(id));
                     System.out.printf("You tie with:");
@@ -64,18 +64,21 @@ public class Client {
                     System.out.println(" !");
                     break;
                 }
-                if(response.startsWith("LOSE")){
+                else if(response.startsWith("LOSE")){
                     System.out.println("You lose :(");
                     break;
                 }
-                if(response.startsWith("MOVE")){
+                else if(response.startsWith("MOVE")){
 
                     //enable all buttons
                 }
-                if(response.startsWith("UPDATE")){
+                else if(response.startsWith("UPDATE")){
                     Game updatedGame = (Game) in.readObject();
                     controller.game = updatedGame;
                     controller.boardUI.updateByGame(updatedGame);
+                }
+                else if(response.startsWith("VOTE")){
+                    controller.voteForNewGame();
                 }
 
             } catch (IOException e) {
