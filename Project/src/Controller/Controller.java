@@ -62,7 +62,7 @@ public class Controller{
     private void addNewGameListener() {
         boardUI.addNewGameListener(new ActionListener(){
             public void actionPerformed(ActionEvent event) {
-                requestServer("RESTART");
+                sendVoteResult("RESTART");
                 //newGame();
             }
         });
@@ -371,14 +371,22 @@ public class Controller{
         }
     }
 
+    private void sendVoteResult(String msg){
+        try {
+            out.writeObject(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void voteForNewGame(){
         int replyNewGame = JOptionPane.showConfirmDialog(null,
                 "Do you want to start a new game","Yes?",JOptionPane.YES_NO_OPTION);
         if(replyNewGame==JOptionPane.YES_OPTION) {
-            requestServer("AGREE");
+            sendVoteResult("AGREE");
         }
         else{
-            requestServer("DECLINE");
+            sendVoteResult("DECLINE");
         }
     }
 
