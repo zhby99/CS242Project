@@ -34,7 +34,7 @@ public class Controller{
         addFunctionalListeners();
     }
 
-    public Controller(Game game, ObjectOutputStream out){
+    public Controller(Game game, ObjectOutputStream out, int id){
         this.game = game;
         this.out = out;
         this.boardUI = new BoardUI(game);
@@ -42,7 +42,7 @@ public class Controller{
         addMenuItemListener();
         addGemsListener();
         addCardListeners();
-        addFunctionalListeners();
+        addFunctionalListeners(id);
     }
 
 
@@ -167,6 +167,13 @@ public class Controller{
         addReserveListener();
     }
 
+    private void addFunctionalListeners(int id){
+        addResetLisenter(id);
+        addCollectListener(id);
+        addBuyListener(id);
+        addReserveListener(id);
+    }
+
     /**
      * Add listener to the reset button
      */
@@ -179,6 +186,21 @@ public class Controller{
         });
     }
 
+    private void addResetLisenter(int id){
+        this.boardUI.getReset().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(game.getCurrentPlayer().getPlayerId() == id+1) {
+                    currentGemInfo.reset();
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "Wait for your opponent's move",
+                            "Warning", JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+    }
+
     /**
      * Add listener to the collect button
      */
@@ -186,6 +208,36 @@ public class Controller{
         this.boardUI.getCollect().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                boolean status = game.getCurrentPlayer().collectGems(currentGemInfo);
+                if(!status){
+                    JOptionPane.showMessageDialog(null, "Invalid Collection! Please make another try!",
+                            "Warning", JOptionPane.WARNING_MESSAGE);
+                    currentGemInfo.reset();
+                }
+                else{
+                    currentGemInfo.reset();
+                    //if (checkEnd()) return;
+                    game.turnToNextPlayer();
+
+                    requestServer("COLLECT");
+
+                    //boardUI.updateByGame(game);
+                }
+
+            }
+        });
+    }
+
+    private void addCollectListener(int id){
+        this.boardUI.getCollect().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(game.getCurrentPlayer().getPlayerId() != id+1) {
+                    JOptionPane.showMessageDialog(null, "Wait for your opponent's move",
+                            "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
                 boolean status = game.getCurrentPlayer().collectGems(currentGemInfo);
                 if(!status){
                     JOptionPane.showMessageDialog(null, "Invalid Collection! Please make another try!",
@@ -245,6 +297,50 @@ public class Controller{
         });
     }
 
+
+
+    private void addBuyListener(int id){
+        this.boardUI.getBuy().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(game.getCurrentPlayer().getPlayerId() != id+1) {
+                    JOptionPane.showMessageDialog(null, "Wait for your opponent's move",
+                            "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                if(selectedCard == null){
+                    JOptionPane.showMessageDialog(null, "Must select one card!",
+                            "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                boolean status = game.getCurrentPlayer().buyCard(selectedCard,selectedCard.isReserved());
+                if(!status){
+                    JOptionPane.showMessageDialog(null, "Cannot buy that card! Please make another try!",
+                            "Warning", JOptionPane.WARNING_MESSAGE);
+                    selectedCard = null;
+                }
+                else{
+                    Card newCard = game.getGameBoard().getNewCard(selectedCard.getPosition()[0]);
+                    game.getGameBoard().setCardOnBoard(newCard, selectedCard.getPosition());
+                    selectedCard = null;
+                    game.getCurrentPlayer().recruitAvailableNobles();
+                    if (checkEnd()) {
+
+                        game.turnToNextPlayer();
+                        requestServer("VICTORY");
+                        return;
+                    }
+                    game.turnToNextPlayer();
+                    requestServer("PURCHASE");
+
+                    //boardUI.updateByGame(game);
+                }
+
+            }
+        });
+    }
+
+
     private boolean checkEnd() {
 
         /*
@@ -282,6 +378,41 @@ public class Controller{
     /**
      * Add listener to the reserve button
      */
+    private void addReserveListener(int id){
+        this.boardUI.getReserve().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(game.getCurrentPlayer().getPlayerId() != id+1) {
+                    JOptionPane.showMessageDialog(null, "Wait for your opponent's move",
+                            "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                if(selectedCard == null){
+                    JOptionPane.showMessageDialog(null, "Must select one card!",
+                            "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                boolean status = game.getCurrentPlayer().reserveCard(selectedCard);
+                if(!status){
+                    JOptionPane.showMessageDialog(null, "Cannot reserve that card! Please make another try!",
+                            "Warning", JOptionPane.WARNING_MESSAGE);
+                    selectedCard = null;
+                }
+                else{
+                    Card newCard = game.getGameBoard().getNewCard(selectedCard.getPosition()[0]);
+                    game.getGameBoard().setCardOnBoard(newCard, selectedCard.getPosition());
+                    selectedCard = null;
+                    //if (checkEnd()) return;
+                    game.turnToNextPlayer();
+                    //boardUI.window.setEnabled(false);
+                    requestServer("RESERVE");
+
+                    //boardUI.updateByGame(game);
+                }
+            }
+        });
+    }
+
     private void addReserveListener(){
         this.boardUI.getReserve().addActionListener(new ActionListener() {
             @Override
