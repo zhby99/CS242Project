@@ -2,19 +2,19 @@ package Model;
 
 import Model.utils.GemInfo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by wu on 4/8/17.
  */
-public class Card {
+public class Card implements Serializable {
     final private int cardScore;
     final private GemInfo developmentCost;
     final private Gem targetGem;
     private boolean reserved;
     private int rank;
     private int index;
-
 
     public Card(int score, GemInfo developmentCost, Gem targetGem) {
         this.cardScore = score;

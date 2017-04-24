@@ -26,7 +26,7 @@ import Model.*;
  */
 public class BoardUI {
 
-    private JFrame window;
+    public JFrame window;
     private JPanel gameArea;
     private JPanel playerArea;
 
