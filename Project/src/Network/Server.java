@@ -106,7 +106,9 @@ public class Server extends Thread  {
                 gameInit();
                 //game loop
                 int currentPlayer = 0;
+                int tmp = 0;
                 int vote = 0;
+                int agree = 0;
                 while (true) {
                     try {
                         //action
@@ -140,6 +142,7 @@ public class Server extends Thread  {
                         if (request.startsWith("RESTART")) {
                             //add consensus function
                             Game updatedGame = (Game) input[currentPlayer].readObject();
+                            tmp = currentPlayer;
                             askNewGame();
                             continue;
                         }
@@ -147,11 +150,31 @@ public class Server extends Thread  {
                         if(request.startsWith("AGREE")){
                             Game updatedGame = (Game) input[currentPlayer].readObject();
                             vote += 1;
-                            if(vote == NUM_PLAYER){
+                            agree +=1;
+                            if(agree == NUM_PLAYER){
                                 vote = 0;
+                                agree = 0;
                                 Game newGame = new Game();
                                 currentPlayer = 0;
                                 broadcastPlayers(newGame);
+                            }
+                            else if(vote == NUM_PLAYER){
+                                vote = 0;
+                                agree = 0;
+                                broadcastPlayers(updatedGame);
+                                currentPlayer = tmp;
+                            }
+                            continue;
+                        }
+
+                        if(request.startsWith("DECLINE")){
+                            Game updatedGame = (Game) input[currentPlayer].readObject();
+                            vote += 1;
+                            if(vote == NUM_PLAYER){
+                                vote = 0;
+                                agree = 0;
+                                broadcastPlayers(updatedGame);
+                                currentPlayer = tmp;
                             }
                             continue;
                         }
