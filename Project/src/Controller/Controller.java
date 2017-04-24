@@ -375,6 +375,9 @@ public class Controller{
         if(replyNewGame==JOptionPane.YES_OPTION) {
             requestServer("AGREE");
         }
+        else{
+            requestServer("DECLINE");
+        }
     }
 
     public static void main(String[] args) throws IOException {
