@@ -21,13 +21,14 @@ public class Controller{
     public BoardUI boardUI;
     private Card selectedCard;
     private GemInfo currentGemInfo;
-
     private ObjectOutputStream out;
+    private int id;
 
     public Controller(){
         this.game = new Game();
-        this.boardUI = new BoardUI(game);
+        this.boardUI = new BoardUI(game,0);
         this.currentGemInfo = new GemInfo(0);
+        this.id = 0;
         addMenuItemListener();
         addGemsListener();
         addCardListeners();
@@ -37,12 +38,13 @@ public class Controller{
     public Controller(Game game, ObjectOutputStream out, int id){
         this.game = game;
         this.out = out;
-        this.boardUI = new BoardUI(game);
+        this.boardUI = new BoardUI(game,id);
         this.currentGemInfo = new GemInfo(0);
+        this.id = id;
         addMenuItemListener();
         addGemsListener();
         addCardListeners();
-        addFunctionalListeners(id, true);
+        addFunctionalListeners(true);
     }
 
 
@@ -161,24 +163,24 @@ public class Controller{
      * Add listeners to the four major operations
      */
     private void addFunctionalListeners(){
-        addResetLisenter(0,false);
-        addCollectListener(0,false);
-        addBuyListener(0,false);
-        addReserveListener(0,false);
+        addResetLisenter(false);
+        addCollectListener(false);
+        addBuyListener(false);
+        addReserveListener(false);
     }
 
-    private void addFunctionalListeners(int id, boolean serverMode){
-        addResetLisenter(id, true);
-        addCollectListener(id, true);
-        addBuyListener(id, true);
-        addReserveListener(id, true);
+    private void addFunctionalListeners(boolean serverMode){
+        addResetLisenter(true);
+        addCollectListener(true);
+        addBuyListener(true);
+        addReserveListener(true);
     }
 
     /**
      * Add listener to the reset button
      */
 
-    private void addResetLisenter(int id, boolean serverMode){
+    private void addResetLisenter(boolean serverMode){
         this.boardUI.getReset().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -196,7 +198,7 @@ public class Controller{
      * Add listener to the collect button
      */
 
-    private void addCollectListener(int id, boolean serverMode){
+    private void addCollectListener(boolean serverMode){
         this.boardUI.getCollect().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -229,7 +231,7 @@ public class Controller{
     /**
      * Add listener to the buy button
      */
-    private void addBuyListener(int id, boolean serverMode){
+    private void addBuyListener(boolean serverMode){
         this.boardUI.getBuy().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -308,7 +310,7 @@ public class Controller{
     /**
      * Add listener to the reserve button
      */
-    private void addReserveListener(int id, boolean serverMode){
+    private void addReserveListener(boolean serverMode){
         this.boardUI.getReserve().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

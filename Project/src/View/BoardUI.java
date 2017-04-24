@@ -62,10 +62,10 @@ public class BoardUI {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public BoardUI(Game game) {
+    public BoardUI(Game game, int id) {
 
         loadImagesInMemory();
-        window = new JFrame("Splendor");
+        window = new JFrame("Splendor for player "+Integer.toString(id));
         window.setPreferredSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
         window.setMaximumSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
         window.setMinimumSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
