@@ -45,7 +45,7 @@ public class Client {
 
         keyboardInput =new Scanner(System.in);
         String name = keyboardInput.nextLine();
-        
+
         //name interface
         flowOutput.writeObject(name);
 
@@ -59,7 +59,7 @@ public class Client {
         //out.writeObject(game);
     }
 
-    public void play() throws ClassNotFoundException, IOException {
+    private void play() throws ClassNotFoundException, IOException {
         while(true){
             String response = null;
             try {
@@ -72,8 +72,8 @@ public class Client {
                     ArrayList<Integer> playerList = (ArrayList<Integer>) flowInput.readObject();
                     playerList.remove(new Integer(id));
                     System.out.printf("You tie with:");
-                    for(int i = 0; i<playerList.size();i++){
-                        System.out.printf(" %d",playerList.get(i));
+                    for (Integer aPlayerList : playerList) {
+                        System.out.printf(" %d", aPlayerList);
                     }
                     System.out.println(" !");
                     break;
@@ -81,10 +81,6 @@ public class Client {
                 else if(response.startsWith("LOSE")){
                     System.out.println("You lose :(");
                     break;
-                }
-                else if(response.startsWith("MOVE")){
-
-                    //enable all buttons
                 }
                 else if(response.startsWith("UPDATE")){
                     Game updatedGame = (Game) flowInput.readObject();
