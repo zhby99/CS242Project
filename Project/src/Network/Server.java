@@ -26,6 +26,8 @@ public class Server extends Thread  {
         output = new ObjectOutputStream[NUM_PLAYER];
         input = new ObjectInputStream[NUM_PLAYER];
 
+        System.out.println("Server is set up");
+
         for(int i = 0; i <  NUM_PLAYER; i++){
             Socket server = listener.accept();
             System.out.printf("%d players connected\n",i+1);
@@ -36,17 +38,15 @@ public class Server extends Thread  {
 
     }
 
-    private void gameInit() throws IOException{
+    private void gameInit() throws IOException, ClassNotFoundException {
 
         ArrayList<String> names = new ArrayList<String>(NUM_PLAYER);
         for(int i = 0; i < NUM_PLAYER; i++){
-            String username = null;
-            try {
-                username = (String)input[i].readObject();
-                names.add(username);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+
+            output[i].writeObject("Please specify your username");
+            String username = (String)input[i].readObject();
+            names.add(username);
+
         }
 
         Game game = new Game(names);
@@ -218,6 +218,8 @@ public class Server extends Thread  {
             } catch (IOException e) {
                 e.printStackTrace();
                 //break;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         //}
         System.out.println("Server closed");

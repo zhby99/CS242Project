@@ -40,10 +40,12 @@ public class Client {
         flowOutput = new ObjectOutputStream(socket.getOutputStream());
 
 
-        keyboardInput =new Scanner(System.in);
-        System.out.println("Please enter your username");
-        String name = keyboardInput.nextLine();
+        String msg = (String)flowInput.readObject();
+        System.out.println(msg);
 
+        keyboardInput =new Scanner(System.in);
+        String name = keyboardInput.nextLine();
+        
         //name interface
         flowOutput.writeObject(name);
 
