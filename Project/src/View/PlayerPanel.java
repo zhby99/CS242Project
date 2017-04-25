@@ -48,17 +48,17 @@ public class PlayerPanel extends JPanel {
         status = new JPanel();
         status.setOpaque(false);
         status.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
-        setStatus(1,5,true);
+        //setStatus(1,5,true);
 
         gems = new JPanel();
         gems.setOpaque(false);
         gems.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
-        setGems(new GemInfo(0),0);
+        //setGems(new GemInfo(0),0);
 
         cards = new JPanel();
         cards.setOpaque(false);
         cards.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
-        setCards(new GemInfo(0));
+        //setCards(new GemInfo(0));
 
         info.add(status);
         info.add(gems);
@@ -75,7 +75,7 @@ public class PlayerPanel extends JPanel {
         }
     }
 
-    public void setStatus(int id, int score, boolean indicator){
+    public void setStatus(String name, int score, boolean indicator){
 
         int width = PLAYER_WIDTH/9;
         int height = PLAYER_HEIGHT/3;
@@ -85,7 +85,7 @@ public class PlayerPanel extends JPanel {
         status.removeAll();
         status.validate();
         status.repaint();
-        JLabel idLabel = new JLabel("Player"+Integer.toString(id),JLabel.CENTER);
+        JLabel idLabel = new JLabel(name,JLabel.CENTER);
         idLabel.setPreferredSize(new Dimension(width,height));
         status.add(idLabel);
 

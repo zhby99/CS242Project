@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import static Model.utils.GameUtils.*;
 
@@ -28,35 +29,20 @@ public class Game implements Serializable{
         this.players = new Player[NUM_PLAYER];
 
         for(int i = 0; i < NUM_PLAYER; i++){
-            players[i] = new Player(i+1 , this.gameBoard);
+            players[i] = new Player(i+1 , this.gameBoard, null);
         }
         currentPlayer = players[0];
     }
 
-    public Game(ServerSocket listener) throws IOException {
+    public Game(ArrayList<String> names){
         this.gameBoard = new Board(NUM_PLAYER);
         this.gameBoard.initialBoard();
         this.players = new Player[NUM_PLAYER];
 
         for(int i = 0; i < NUM_PLAYER; i++){
-            players[i] = new Player(i+1 , this.gameBoard);
+            players[i] = new Player(i+1 , this.gameBoard, names.get(i));
         }
-
         currentPlayer = players[0];
-
-        //this.players = new Player[NUM_PLAYER];
-
-        /*
-        for(int i = 0; i < NUM_PLAYER; i++){
-            Socket socket = listener.accept();
-            players[i] = new Player(socket, i+1 , this.gameBoard);
-        }
-
-        /*
-        currentPlayer = players[0];
-        for(int i = 0; i < NUM_PLAYER; i++){
-            players[i].start();
-        }*/
     }
 
     public Board getGameBoard(){
