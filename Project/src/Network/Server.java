@@ -2,6 +2,8 @@ package Network;
 
 import Controller.Controller;
 import Game.*;
+
+import javax.print.DocFlavor;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -24,23 +26,36 @@ public class Server extends Thread  {
         output = new ObjectOutputStream[NUM_PLAYER];
         input = new ObjectInputStream[NUM_PLAYER];
 
+        System.out.println("Server is set up");
+
         for(int i = 0; i <  NUM_PLAYER; i++){
             Socket server = listener.accept();
             System.out.printf("%d players connected\n",i+1);
 
             output[i] = new ObjectOutputStream(server.getOutputStream());
             input[i] = new ObjectInputStream(server.getInputStream());
-
         }
+
     }
 
-    private void gameInit() throws IOException {
-        Game game = new Game();
+    private void gameInit() throws IOException, ClassNotFoundException {
 
+        ArrayList<String> names = new ArrayList<String>(NUM_PLAYER);
+        for(int i = 0; i < NUM_PLAYER; i++){
+
+            output[i].writeObject("Please specify your username");
+            String username = (String)input[i].readObject();
+            names.add(username);
+
+        }
+
+        Game game = new Game(names);
+        System.out.println("new Game");
         gameHelper(game);
     }
 
     private void gameHelper(Game game) throws IOException {
+
         for(int i = 0; i <  NUM_PLAYER; i++) {
             output[i].writeObject(i);
             output[i].writeObject(game);
@@ -50,6 +65,7 @@ public class Server extends Thread  {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
+
         }
         System.out.println("Game Starts");
     }
@@ -202,6 +218,8 @@ public class Server extends Thread  {
             } catch (IOException e) {
                 e.printStackTrace();
                 //break;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         //}
         System.out.println("Server closed");

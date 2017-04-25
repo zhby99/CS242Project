@@ -62,10 +62,10 @@ public class BoardUI {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    public BoardUI(Game game, int id) {
+    public BoardUI(Game game, String name) {
 
         loadImagesInMemory();
-        window = new JFrame("Splendor for player "+Integer.toString(id));
+        window = new JFrame("Splendor for " + name);
         window.setPreferredSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
         window.setMaximumSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
         window.setMinimumSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
@@ -123,9 +123,9 @@ public class BoardUI {
         Player[] gamePlayers = game.getPlayers();
         for (int i=0;i<NUM_PLAYER;i++) {
             if (game.getCurrentPlayer().getPlayerId() == gamePlayers[i].getPlayerId()) {
-                this.players[i].setStatus(gamePlayers[i].getPlayerId(), gamePlayers[i].getScore(), true);
+                this.players[i].setStatus(gamePlayers[i].getName(), gamePlayers[i].getScore(), true);
             } else {
-                this.players[i].setStatus(gamePlayers[i].getPlayerId(), gamePlayers[i].getScore(), false);
+                this.players[i].setStatus(gamePlayers[i].getName(), gamePlayers[i].getScore(), false);
             }
             this.players[i].setGems(gamePlayers[i].getGems(), gamePlayers[i].getGolds());
             this.players[i].setCards(gamePlayers[i].getCards());
