@@ -28,6 +28,7 @@ public class Client {
     private Controller controller;
 
     private int id;
+    private boolean ai;
     private String username;
 
     public Client(String serverAddress) throws Exception {
@@ -51,7 +52,15 @@ public class Client {
 
         id = (Integer) flowInput.readObject();
         Game game = (Game) flowInput.readObject();
-        controller = new Controller(game, flowOutput, id, name);
+        if(name.startsWith("ai")){
+            ai = true;
+            System.out.println("This client is controlled by AI!");
+            controller = new Controller(game, flowOutput, id, true);
+        }
+        else{
+            ai = false;
+            controller = new Controller(game, flowOutput, id, name);
+        }
 
         //name interface
         flowOutput.writeObject(name+" initialized");
@@ -60,46 +69,69 @@ public class Client {
     }
 
     public void play() throws ClassNotFoundException, IOException {
-        while(true){
-            String response = null;
-            try {
-                response = (String) flowInput.readObject();
-                if(response.startsWith("WIN")){
-                    System.out.println("You win :)");
-                    break;
-                }
-                else if(response.startsWith ("TIE")){
-                    ArrayList<Integer> playerList = (ArrayList<Integer>) flowInput.readObject();
-                    playerList.remove(new Integer(id));
-                    System.out.printf("You tie with:");
-                    for(int i = 0; i<playerList.size();i++){
-                        System.out.printf(" %d",playerList.get(i));
+        if(!ai){
+            while(true){
+                String response;
+                try {
+                    response = (String) flowInput.readObject();
+                    if(response.startsWith("WIN")){
+                        System.out.println("You win :)");
+                        break;
                     }
-                    System.out.println(" !");
-                    break;
-                }
-                else if(response.startsWith("LOSE")){
-                    System.out.println("You lose :(");
-                    break;
-                }
-                else if(response.startsWith("MOVE")){
+                    else if(response.startsWith ("TIE")){
+                        ArrayList<Integer> playerList = (ArrayList<Integer>) flowInput.readObject();
+                        playerList.remove(new Integer(id));
+                        System.out.printf("You tie with:");
+                        for(int i = 0; i<playerList.size();i++){
+                            System.out.printf(" %d",playerList.get(i));
+                        }
+                        System.out.println(" !");
+                        break;
+                    }
+                    else if(response.startsWith("LOSE")){
+                        System.out.println("You lose :(");
+                        break;
+                    }
+                    else if(response.startsWith("MOVE")){
 
-                    //enable all buttons
-                }
-                else if(response.startsWith("UPDATE")){
-                    Game updatedGame = (Game) flowInput.readObject();
-                    controller.game = updatedGame;
-                    controller.boardUI.updateByGame(updatedGame);
-                }
-                else if(response.startsWith("VOTE")){
-                    controller.voteForNewGame();
-                }
+                        //enable all buttons
+                    }
+                    else if(response.startsWith("UPDATE")){
+                        Game updatedGame = (Game) flowInput.readObject();
+                        controller.game = updatedGame;
+                        controller.boardUI.updateByGame(updatedGame);
+                    }
+                    else if(response.startsWith("VOTE")){
+                        controller.voteForNewGame();
+                    }
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-
         }
+        else{
+            while(true) {
+                String response;
+                try {
+                    response = (String) flowInput.readObject();
+                    if(response.startsWith("UPDATE")){
+                        Game updatedGame = (Game) flowInput.readObject();
+                        controller.game = updatedGame;
+                        if(controller.game.getCurrentPlayer().getPlayerId() == id+1){
+                            controller.requestServer("COLLECT","1 1 1 0 0");
+                        }
+                    }
+                    else if(response.startsWith("VOTE")){
+                        controller.sendVoteResult("AGREE");
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         socket.close();
         System.out.println("Game Over");
     }
