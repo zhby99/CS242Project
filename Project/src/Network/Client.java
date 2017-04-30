@@ -27,7 +27,7 @@ public class Client {
     private ObjectOutputStream flowOutput = null;
     private Controller controller;
 
-    private int id;
+    private int clientID;
     private String username;
 
     public Client(String serverAddress) throws Exception {
@@ -39,26 +39,28 @@ public class Client {
         flowInput = new ObjectInputStream(socket.getInputStream());
         flowOutput = new ObjectOutputStream(socket.getOutputStream());
 
-
         String msg = (String)flowInput.readObject();
         System.out.println(msg);
 
+        //get username from keyboard
         keyboardInput =new Scanner(System.in);
         String name = keyboardInput.nextLine();
 
-        //name interface
+        //send username back
         flowOutput.writeObject(name);
 
-        id = (Integer) flowInput.readObject();
+        //fetch id and game
+        clientID = (Integer) flowInput.readObject();
         Game game = (Game) flowInput.readObject();
-        controller = new Controller(game, flowOutput, id, name);
+        controller = new Controller(game, flowOutput, clientID, name);
 
-        //name interface
+        //notify server the local game is ready
         flowOutput.writeObject(name+" initialized");
 
         //out.writeObject(game);
     }
 
+    //gaming logic
     private void play() throws ClassNotFoundException, IOException {
         while(true){
             String response = null;
@@ -68,25 +70,31 @@ public class Client {
                     System.out.println("You win :)");
                     break;
                 }
+                //this player ties with the other players
                 else if(response.startsWith ("TIE")){
+                    //get the index of players
                     ArrayList<Integer> playerList = (ArrayList<Integer>) flowInput.readObject();
-                    playerList.remove(new Integer(id));
+                    //remove duplicate of the player itself
+                    playerList.remove(new Integer(clientID));
                     System.out.printf("You tie with:");
                     for (Integer aPlayerList : playerList) {
-                        System.out.printf(" %d", aPlayerList);
+                        System.out.printf(" %s", controller.game.players[aPlayerList].getName());
                     }
                     System.out.println(" !");
                     break;
                 }
+                //this player loses
                 else if(response.startsWith("LOSE")){
                     System.out.println("You lose :(");
                     break;
                 }
+                //server wants to update the game
                 else if(response.startsWith("UPDATE")){
                     Game updatedGame = (Game) flowInput.readObject();
                     controller.game = updatedGame;
                     controller.boardUI.updateByGame(updatedGame);
                 }
+                //someone wants to start a new game
                 else if(response.startsWith("VOTE")){
                     controller.voteForNewGame();
                 }

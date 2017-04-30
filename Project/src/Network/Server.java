@@ -22,6 +22,7 @@ public class Server extends Thread  {
     private ObjectOutputStream[] output;
 
     public Server(int port)throws Exception {
+        //open new socket and stream
         listener = new ServerSocket(port);
         output = new ObjectOutputStream[NUM_PLAYER];
         input = new ObjectInputStream[NUM_PLAYER];
@@ -29,15 +30,17 @@ public class Server extends Thread  {
         System.out.println("Server is set up");
 
         for(int i = 0; i <  NUM_PLAYER; i++){
+            //for wait enough players to connect
             Socket server = listener.accept();
             System.out.printf("%d players connected\n",i+1);
-
+            //establish streaming for each player
             output[i] = new ObjectOutputStream(server.getOutputStream());
             input[i] = new ObjectInputStream(server.getInputStream());
         }
 
     }
 
+    //initialize game after each player sends their game back
     private void gameInit() throws IOException, ClassNotFoundException {
 
         ArrayList<String> names = new ArrayList<String>(NUM_PLAYER);
@@ -54,11 +57,13 @@ public class Server extends Thread  {
         gameHelper(game);
     }
 
+    //assign each player a unique id and send them the game
     private void gameHelper(Game game) throws IOException {
 
         for(int i = 0; i <  NUM_PLAYER; i++) {
             output[i].writeObject(i);
             output[i].writeObject(game);
+            //ensure the game is initialized for each player
             try {
                 String str = (String)input[i].readObject();
                 System.out.println(str);
@@ -70,15 +75,17 @@ public class Server extends Thread  {
         System.out.println("Game Starts");
     }
 
-
-    public void gameExit() throws IOException {
+    //close the socket
+    private void gameExit() throws IOException {
 
         listener.close();
 
         System.out.println("Game Ends");
     }
 
-    public void announceResult(ArrayList<Integer>  winners) throws IOException {
+
+    //broadcast the list of winners to all players
+    private void announceResult(ArrayList<Integer>  winners) throws IOException {
 
         for(int i = 0; i <  NUM_PLAYER; i++) {
 
@@ -86,8 +93,6 @@ public class Server extends Thread  {
                 if (winners.size() == 1)
                     output[i].writeObject("WIN");
                 else {
-                    //reference
-                    //winners.remove(new Integer(i));
                     output[i].writeObject("TIE");
                     output[i].writeObject(winners);
                 }
@@ -95,6 +100,27 @@ public class Server extends Thread  {
             else
                 output[i].writeObject("LOSE");
         }
+
+    }
+
+    //when someone declares victory, the rest players still have one round to play
+    private void lastRound(int currentPlayer) throws IOException, ClassNotFoundException {
+        Game updatedGame = (Game) input[currentPlayer].readObject();
+        broadcastPlayers(updatedGame);
+
+        //collect the index of winners
+        ArrayList<Integer> winners = new ArrayList<>();
+        winners.add(currentPlayer);
+
+        for (int nextPlayer = currentPlayer + 1; nextPlayer < NUM_PLAYER; nextPlayer++) {
+            String request = (String) input[nextPlayer].readObject();
+            updatedGame = (Game) input[nextPlayer].readObject();
+            if (request.startsWith("VICTORY")) {
+                winners.add(nextPlayer);
+            }
+            broadcastPlayers(updatedGame);
+        }
+        announceResult(winners);
 
     }
 
@@ -108,6 +134,7 @@ public class Server extends Thread  {
         }
     }
 
+    //update game for each player
     public void broadcastPlayers(Game updatedGame) throws IOException {
 
         for(int i = 0; i <  NUM_PLAYER; i++){
@@ -138,34 +165,23 @@ public class Server extends Thread  {
                             gameExit();
                             break;
                         }
+
+                        //a player meets the game winning requirement
                         if (request.startsWith("VICTORY")) {
-                            Game updatedGame = (Game) input[currentPlayer].readObject();
-                            broadcastPlayers(updatedGame);
-
-                            ArrayList<Integer> winners = new ArrayList<>();
-                            winners.add(currentPlayer);
-
-                            for (int nextPlayer = currentPlayer + 1; nextPlayer < NUM_PLAYER; nextPlayer++) {
-                                //output[nextPlayer].writeObject("MOVE");
-                                request = (String) input[nextPlayer].readObject();
-                                updatedGame = (Game) input[nextPlayer].readObject();
-                                if (request.startsWith("VICTORY")) {
-                                    winners.add(nextPlayer);
-                                }
-                                broadcastPlayers(updatedGame);
-                            }
-                            announceResult(winners);
+                            lastRound(currentPlayer);
                             gameExit();
                             break;
                         }
 
+                        //a player request a new game
 						if (request.startsWith("RESTART")) {
-                            //add consensus function
                             tmp = currentPlayer;
+                            //ask for consensus
                             askNewGame();
                             continue;
 						}
 
+						//count the votes and add up agree
                         if(request.startsWith("AGREE")){
                             vote += 1;
                             agree +=1;
@@ -186,6 +202,7 @@ public class Server extends Thread  {
                             continue;
                         }
 
+                        //add up the vote only
                         if(request.startsWith("DECLINE")){
                             vote += 1;
                             currentPlayer = (currentPlayer + 1) % NUM_PLAYER;
@@ -198,6 +215,7 @@ public class Server extends Thread  {
                             continue;
                         }
 
+                        //valid action
                         if (request.startsWith("COLLECT") || request.startsWith("PURCHASE") || request.startsWith("RESERVE")) {
                             Game updatedGame = (Game) input[currentPlayer].readObject();
                             broadcastPlayers(updatedGame);
