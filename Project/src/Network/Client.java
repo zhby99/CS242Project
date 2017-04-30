@@ -27,8 +27,9 @@ public class Client {
     private ObjectOutputStream flowOutput = null;
     private Controller controller;
 
-    private int id;
+
     private boolean ai;
+    private int clientID;
     private String username;
 
     public Client(String serverAddress) throws Exception {
@@ -40,33 +41,37 @@ public class Client {
         flowInput = new ObjectInputStream(socket.getInputStream());
         flowOutput = new ObjectOutputStream(socket.getOutputStream());
 
-
         String msg = (String)flowInput.readObject();
         System.out.println(msg);
 
+        //get username from keyboard
         keyboardInput =new Scanner(System.in);
         String name = keyboardInput.nextLine();
-        
-        //name interface
+
+        //send username back
         flowOutput.writeObject(name);
 
-        id = (Integer) flowInput.readObject();
+        //fetch id and game
+        clientID = (Integer) flowInput.readObject();
         Game game = (Game) flowInput.readObject();
+
         if(name.startsWith("ai")){
             ai = true;
             System.out.println("This client is controlled by AI!");
-            controller = new Controller(game, flowOutput, id, true);
+            controller = new Controller(game, flowOutput, clientID, true);
         }
         else{
             ai = false;
-            controller = new Controller(game, flowOutput, id, name);
+            controller = new Controller(game, flowOutput, clientID, name);
         }
 
-        //name interface
+
+        //notify server the local game is ready
         flowOutput.writeObject(name+" initialized");
 
         //out.writeObject(game);
     }
+
 
     public void play() throws ClassNotFoundException, IOException {
         if(!ai){
@@ -80,7 +85,7 @@ public class Client {
                     }
                     else if(response.startsWith ("TIE")){
                         ArrayList<Integer> playerList = (ArrayList<Integer>) flowInput.readObject();
-                        playerList.remove(new Integer(id));
+                        playerList.remove(new Integer(clientID));
                         System.out.printf("You tie with:");
                         for(int i = 0; i<playerList.size();i++){
                             System.out.printf(" %d",playerList.get(i));
@@ -105,6 +110,7 @@ public class Client {
                         controller.voteForNewGame();
                     }
 
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -118,7 +124,7 @@ public class Client {
                     if(response.startsWith("UPDATE")){
                         Game updatedGame = (Game) flowInput.readObject();
                         controller.game = updatedGame;
-                        if(controller.game.getCurrentPlayer().getPlayerId() == id+1){
+                        if(controller.game.getCurrentPlayer().getPlayerId() == clientID+1){
                             controller.requestServer("COLLECT","1 1 1 0 0");
                         }
                     }
