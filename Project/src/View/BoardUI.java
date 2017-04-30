@@ -65,7 +65,7 @@ public class BoardUI {
     public BoardUI(Game game, String name) {
 
         loadImagesInMemory();
-        window = new JFrame("Splendor for " + name);
+        window = new JFrame("Splendor @" + name);
         window.setPreferredSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
         window.setMaximumSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
         window.setMinimumSize(new Dimension(WINDOW_WIDTH,WINDOW_HEIGHT));
