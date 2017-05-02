@@ -125,7 +125,9 @@ public class Client {
                         Game updatedGame = (Game) flowInput.readObject();
                         controller.game = updatedGame;
                         if(controller.game.getCurrentPlayer().getPlayerId() == clientID+1){
-                            controller.requestServer("COLLECT","1 1 1 0 0");
+                            String command = controller.game.getCurrentPlayer().whichOperation(controller.game);
+                            String[] splitedCommand = command.split(" ", 2);
+                            controller.requestServer(splitedCommand[0], splitedCommand[1]);
                         }
                     }
                     else if(response.startsWith("VOTE")){
