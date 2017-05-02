@@ -1,14 +1,15 @@
 package Network;
 
-import Controller.Controller;
 import Game.*;
 import Model.Card;
 import Model.utils.GemInfo;
+import View.BoardUI;
 
-import javax.print.DocFlavor;
+import javax.swing.*;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import static Model.utils.GameUtils.*;
 
@@ -23,22 +24,27 @@ public class Server extends Thread  {
     private ObjectInputStream[] input;
     private ObjectOutputStream[] output;
     private Game game;
+    private FileWriter fstream;
+    private boolean replayMode;
 
-    public Server(int port)throws Exception {
+
+    public Server(int port, boolean replayMode)throws Exception {
         //open new socket and stream
         listener = new ServerSocket(port);
         output = new ObjectOutputStream[NUM_PLAYER];
         input = new ObjectInputStream[NUM_PLAYER];
+        this.replayMode = replayMode;
 
         System.out.println("Server is set up");
-
-        for(int i = 0; i <  NUM_PLAYER; i++){
-            //for wait enough players to connect
-            Socket server = listener.accept();
-            System.out.printf("%d players connected\n",i+1);
-            //establish streaming for each player
-            output[i] = new ObjectOutputStream(server.getOutputStream());
-            input[i] = new ObjectInputStream(server.getInputStream());
+        if(!replayMode) {
+            for (int i = 0; i < NUM_PLAYER; i++) {
+                //for wait enough players to connect
+                Socket server = listener.accept();
+                System.out.printf("%d players connected\n", i + 1);
+                //establish streaming for each player
+                output[i] = new ObjectOutputStream(server.getOutputStream());
+                input[i] = new ObjectInputStream(server.getInputStream());
+            }
         }
 
     }
@@ -154,7 +160,34 @@ public class Server extends Thread  {
         System.out.println("Splendor is running");
         //while(true){
             try {
-                gameInit();
+                if(!replayMode) {
+                    gameInit();
+                }
+                else{
+                    int currentPlayer = 0;
+                    game = new Game();
+                    BoardUI gui = new BoardUI(game, "Replay Mode");
+                    BufferedReader bufferreader = new BufferedReader(new FileReader("log.txt"));
+                    String op;
+                    String command;
+                    while((op=bufferreader.readLine())!=null){
+                        command = bufferreader.readLine();
+                        if(op.startsWith("COLLECT")){
+                            currentPlayer = collectOperation(currentPlayer, command, true);
+                        }
+                        else if(op.startsWith("RESERVE")){
+                            currentPlayer = reserveOperation(currentPlayer, command, true);
+                        }
+                        else if(op.startsWith("PURCHASE")){
+                            currentPlayer = purchaseOperation(currentPlayer, command, true);
+                        }
+                        gui.updateByGame(game);
+                        TimeUnit.SECONDS.sleep(1);
+                    }
+                    JOptionPane.showMessageDialog(null,
+                            "Replay has finished! Thanks for watching!");
+                    return;
+                }
                 //game loop
                 int currentPlayer = 0;
                 int tmp = 0;
@@ -221,64 +254,25 @@ public class Server extends Thread  {
                         // here is receiving the information for collection
                         if (request.startsWith("COLLECT")){
                             String command = (String) input[currentPlayer].readObject();
-                            String[] splited = command.split(" ");
-                            //splited is the number of each gems collected
-                            GemInfo collectedGem = new GemInfo(Integer.parseInt(splited[0]),Integer.parseInt(splited[1]), Integer.parseInt(splited[2]), Integer.parseInt(splited[3]), Integer.parseInt(splited[4]));
-                            game.getCurrentPlayer().collectGems(collectedGem);
-                            game.turnToNextPlayer();
-                            //send the updated game to all the clients
-                            broadcastPlayers(game);
-                            currentPlayer = (currentPlayer + 1) % NUM_PLAYER;
+                            fstream.write("COLLECT\n");
+                            fstream.write(command+"\n");
+                            currentPlayer = collectOperation(currentPlayer, command, false);
                         }
 
                         // here is receiving the information for buying cards
                         if (request.startsWith("PURCHASE")) {
                             String command = (String) input[currentPlayer].readObject();
-                            String[] splited = command.split(" ");
-                            //splited is the postion of the card, and whether the card is reserved
-                            int cardX = Integer.parseInt(splited[0]);
-                            int cardY = Integer.parseInt(splited[1]);
-                            boolean isReserved;
-                            if ( Integer.parseInt(splited[2]) == 1)
-                                isReserved = true;
-                            else
-                                isReserved = false;
-                            Card selectedCard;
-                            //if it's reserved, then get the card from player section
-                            if(isReserved)
-                                selectedCard = game.getPlayers()[cardX].getReserves().get(cardY);
-                            //if not, get the card from the game board
-                            else
-                                selectedCard = game.gameBoard.getCards()[cardX][cardY];
-
-                            game.getCurrentPlayer().buyCard(selectedCard,isReserved);
-                            //if it is not reserved, we need to put a new card back.
-                            if(!isReserved) {
-                                Card newCard = game.getGameBoard().getNewCard(cardX);
-                                int[] positon = {cardX, cardY};
-                                game.getGameBoard().setCardOnBoard(newCard, positon);
-                            }
-                            game.getCurrentPlayer().recruitAvailableNobles();
-                            game.turnToNextPlayer();
-                            broadcastPlayers(game);
-                            currentPlayer = (currentPlayer + 1) % NUM_PLAYER;
+                            fstream.write("PURCHASE\n");
+                            fstream.write(command+"\n");
+                            currentPlayer = purchaseOperation(currentPlayer, command, false);
                         }
 
                         //here is receiving the information for reserving card
                         if (request.startsWith("RESERVE")) {
                             String command = (String) input[currentPlayer].readObject();
-                            String[] splited = command.split(" ");
-                            // splited is the position of the card
-                            int cardX = Integer.parseInt(splited[0]);
-                            int cardY = Integer.parseInt(splited[1]);
-                            Card selectedCard = game.gameBoard.getCards()[cardX][cardY];
-                            game.getCurrentPlayer().reserveCard(selectedCard);
-                            Card newCard = game.getGameBoard().getNewCard(cardX);
-                            int[] positon = {cardX, cardY};
-                            game.getGameBoard().setCardOnBoard(newCard, positon);
-                            game.turnToNextPlayer();
-                            broadcastPlayers(game);
-                            currentPlayer = (currentPlayer + 1) % NUM_PLAYER;
+                            fstream.write("RESERVE\n");
+                            fstream.write(command+"\n");
+                            currentPlayer = reserveOperation(currentPlayer, command, false);
                         }
 
                         //next one;
@@ -297,10 +291,78 @@ public class Server extends Thread  {
                 //break;
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         //}
         System.out.println("Server closed");
 
+    }
+
+    private int collectOperation(int currentPlayer, String command, boolean replayMode) throws IOException {
+        String[] splited = command.split(" ");
+        //splited is the number of each gems collected
+        GemInfo collectedGem = new GemInfo(Integer.parseInt(splited[0]),Integer.parseInt(splited[1]), Integer.parseInt(splited[2]), Integer.parseInt(splited[3]), Integer.parseInt(splited[4]));
+        game.getCurrentPlayer().collectGems(collectedGem);
+        game.turnToNextPlayer();
+        //send the updated game to all the clients
+        if(!replayMode) {
+            broadcastPlayers(game);
+        }
+        currentPlayer = (currentPlayer + 1) % NUM_PLAYER;
+        return currentPlayer;
+    }
+
+    private int reserveOperation(int currentPlayer, String command, boolean replayMode) throws IOException {
+        String[] splited = command.split(" ");
+        // splited is the position of the card
+        int cardX = Integer.parseInt(splited[0]);
+        int cardY = Integer.parseInt(splited[1]);
+        Card selectedCard = game.gameBoard.getCards()[cardX][cardY];
+        game.getCurrentPlayer().reserveCard(selectedCard);
+        Card newCard = game.getGameBoard().getNewCard(cardX);
+        int[] positon = {cardX, cardY};
+        game.getGameBoard().setCardOnBoard(newCard, positon);
+        game.turnToNextPlayer();
+        if(!replayMode) {
+            broadcastPlayers(game);
+        }
+        currentPlayer = (currentPlayer + 1) % NUM_PLAYER;
+        return currentPlayer;
+    }
+
+    private int purchaseOperation(int currentPlayer, String command, boolean replayMode) throws IOException {
+        String[] splited = command.split(" ");
+        //splited is the postion of the card, and whether the card is reserved
+        int cardX = Integer.parseInt(splited[0]);
+        int cardY = Integer.parseInt(splited[1]);
+        boolean isReserved;
+        if ( Integer.parseInt(splited[2]) == 1)
+            isReserved = true;
+        else
+            isReserved = false;
+        Card selectedCard;
+        //if it's reserved, then get the card from player section
+        if(isReserved)
+            selectedCard = game.getPlayers()[cardX].getReserves().get(cardY);
+        //if not, get the card from the game board
+        else
+            selectedCard = game.gameBoard.getCards()[cardX][cardY];
+
+        game.getCurrentPlayer().buyCard(selectedCard,isReserved);
+        //if it is not reserved, we need to put a new card back.
+        if(!isReserved) {
+            Card newCard = game.getGameBoard().getNewCard(cardX);
+            int[] positon = {cardX, cardY};
+            game.getGameBoard().setCardOnBoard(newCard, positon);
+        }
+        game.getCurrentPlayer().recruitAvailableNobles();
+        game.turnToNextPlayer();
+        if(!replayMode) {
+            broadcastPlayers(game);
+        }
+        currentPlayer = (currentPlayer + 1) % NUM_PLAYER;
+        return currentPlayer;
     }
 
 
@@ -309,7 +371,7 @@ public class Server extends Thread  {
 
         Thread t = null;
         try {
-            t = new Server(port);
+            t = new Server(port, false);
         } catch (Exception e) {
             e.printStackTrace();
         }
