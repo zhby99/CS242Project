@@ -2,8 +2,8 @@
 
 This is an implementation of the board game Splendor.
 The project including the following parts
-*Game Logic and Game Loop
-*Graphic User Inferface
+*Game Logic and Game Loop.*
+*Graphic User Inferface.*
 *Server and Client
 *AI Mode
 *Replay Mode
